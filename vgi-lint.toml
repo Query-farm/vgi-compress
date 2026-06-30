@@ -1,0 +1,19 @@
+# vgi-lint-check configuration for vgi-compress.
+#
+# Every function this worker exposes is a pure, in-engine transform over a BLOB
+# (no network, no backend, no external state), so the linter's execution rules
+# (VGI9xx) CAN run the example queries locally against the attached worker. We
+# therefore keep execution ENABLED and gate the whole suite — static metadata and
+# executable examples alike — at `info`.
+#
+# The catalog `source_url` (→ the GitHub repo) and the per-object descriptions,
+# tags, titles, doc_llm/doc_md, per-arg docs, and example_queries are emitted from
+# the worker's FunctionMetadata (see crates/compress-worker/src/**), which the
+# linter reads over VGI.
+[tool.vgi-lint-check]
+select = ["ALL"]
+ignore = []
+fail_on = "info"
+
+[tool.vgi-lint-check.options]
+column_comment_min_ratio = 0.8

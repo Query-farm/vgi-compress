@@ -1,0 +1,13 @@
+/target
+/build
+**/*.rs.bk
+.DS_Store
+
+# vgi-lint review cache
+.vgi-review-cache.json
+
+# Claude Code session/worktree scratch (agent worktrees, local settings)
+/.claude
+
+# haybarn unittest temp dir
+/duckdb_unittest_tempdir

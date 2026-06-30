@@ -1,0 +1,144 @@
+# name: test/sql/compress.test
+# description: compress worker — multi-codec (de)compression over a BLOB, codec
+#              auto-detection, introspection, and the decompression-bomb guard.
+#              Fixtures are produced in-engine by the worker's own compress(), so
+#              the suite needs no external files.
+# group: [sql]
+
+require-env VGI_COMPRESS_WORKER
+
+# The community `vgi` extension hosts the worker protocol type.
+statement ok
+LOAD vgi;
+
+statement ok
+ATTACH 'compress' AS compress (TYPE vgi, LOCATION '${VGI_COMPRESS_WORKER}');
+
+statement ok
+SET search_path='compress.main';
+
+# --- Example 1: decompress a gzip'd column, cast to text ------------------
+
+query T
+SELECT decompress(compress('hello, world'::BLOB, 'gzip'), 'gzip')::VARCHAR;
+----
+hello, world
+
+# detect_codec identifies the gzip member by magic bytes.
+query T
+SELECT detect_codec(compress('the quick brown fox'::BLOB, 'gzip'));
+----
+gzip
+
+# --- Example 2: transcode gzip -> zstd in place (no files) ----------------
+# Decode the gzip payload, re-encode as zstd level 19, and prove it round-trips
+# and is now a zstd stream.
+
+query T
+SELECT decompress(
+         compress(decompress(compress('payload bytes here'::BLOB,'gzip'),'gzip'),'zstd', 19),
+         'zstd')::VARCHAR;
+----
+payload bytes here
+
+query T
+SELECT detect_codec(compress(decompress(compress('x'::BLOB,'gzip'),'gzip'),'zstd', 19));
+----
+zstd
+
+# --- Example 3: auto-detect + decompress, with a bomb guard ---------------
+
+query T
+SELECT decompress_auto(compress('auto detect me'::BLOB, 'zstd'), 67108864)::VARCHAR;
+----
+auto detect me
+
+# Headerless codecs carry no magic — detect_codec returns 'unknown' and
+# decompress_auto refuses them (documented limitation, asserted not lamented).
+query T
+SELECT detect_codec(compress('no magic here at all'::BLOB, 'brotli'));
+----
+unknown
+
+statement error
+SELECT decompress_auto(compress('no magic'::BLOB, 'brotli'), 67108864);
+----
+
+# --- Example 4: compress for export + report the win ----------------------
+# A highly repetitive blob compresses well: ratio < 1.0 and compressed_size is
+# far below the input length.
+
+query T
+SELECT ratio(repeat('abcd', 1000)::BLOB, 'zstd', 19) < 1.0;
+----
+true
+
+query T
+SELECT compressed_size(repeat('abcd', 1000)::BLOB, 'zstd', 19) < 4000;
+----
+true
+
+# decompressed_size reports the original length (gzip reads it from the trailer).
+query I
+SELECT decompressed_size(compress(repeat('z', 5000)::BLOB, 'gzip'), 'gzip');
+----
+5000
+
+# --- Round-trip across a representative codec set -------------------------
+
+query T
+SELECT bool_and(decompress(compress('round trip '||c, c), c)::VARCHAR = 'round trip '||c)
+FROM (VALUES ('zstd'),('gzip'),('zlib'),('deflate'),('brotli'),('lz4'),
+             ('lz4_block'),('snappy'),('snappy_raw'),('xz'),('lzma'),('bzip2')) AS t(c);
+----
+true
+
+# is_valid: TRUE for a real stream, FALSE for garbage (never errors).
+query II
+SELECT is_valid(compress('hi'::BLOB,'gzip'),'gzip'), is_valid('not gzip at all'::BLOB,'gzip');
+----
+true	false
+
+# --- Security: the decompression-bomb guard ------------------------------
+# A small blob that expands far past a tiny per-call cap must abort the row with
+# a per-row error — never crash or OOM the worker.
+
+statement error
+SELECT decompress(compress(repeat('a', 200000)::BLOB, 'gzip'), 'gzip', 1024);
+----
+
+# Above the true size it decodes fine, proving the scan survives the bomb row.
+query I
+SELECT octet_length(decompress(compress(repeat('a', 200000)::BLOB, 'gzip'), 'gzip', 1048576));
+----
+200000
+
+# --- Discovery -----------------------------------------------------------
+
+query T
+SELECT list_contains(codecs(), 'zstd') AND list_contains(codecs(), 'bzip2');
+----
+true
+
+query I
+SELECT len(codecs());
+----
+12
+
+# NULL input flows through to NULL.
+query T
+SELECT decompress(NULL::BLOB, 'gzip') IS NULL;
+----
+true
+
+# Worker version is a non-empty string.
+query T
+SELECT length(compress_version()) > 0;
+----
+true
+
+statement ok
+USE memory;
+
+statement ok
+DETACH compress;

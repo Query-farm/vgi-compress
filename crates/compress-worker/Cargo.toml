@@ -1,0 +1,28 @@
+[package]
+name = "compress-worker"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+repository.workspace = true
+description = "VGI worker exposing multi-codec (de)compression scalar functions over a DuckDB BLOB column: zstd, gzip, zlib, deflate, brotli, lz4, snappy, xz, lzma, bzip2 — with codec auto-detection and a decompression-bomb guard"
+
+[[bin]]
+name = "compress-worker"
+path = "src/main.rs"
+
+[dependencies]
+vgi.workspace = true
+vgi-rpc.workspace = true
+arrow-array.workspace = true
+arrow-buffer.workspace = true
+arrow-schema.workspace = true
+compress-core.workspace = true
+log = "0.4"
+env_logger = "0.11"
+
+[features]
+default = []
+# Forwarded to compress-core: route xz/lzma through the C `liblzma` backend.
+liblzma = ["compress-core/liblzma"]

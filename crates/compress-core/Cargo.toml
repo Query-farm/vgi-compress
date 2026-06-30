@@ -1,0 +1,42 @@
+[package]
+name = "compress-core"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+authors.workspace = true
+description = "Pure-compute multi-codec (de)compression engine for the compress VGI worker (no Arrow / VGI deps): zstd, gzip, zlib, deflate, brotli, lz4, snappy, xz, lzma, bzip2 with a decompression-bomb guard"
+
+[dependencies]
+# zstd (RFC 8478). Vendors libzstd C, used under the permissive BSD option. MIT.
+zstd = "0.13"
+# gzip / zlib / raw deflate via miniz_oxide (pure Rust). MIT OR Apache-2.0.
+flate2 = "1.0"
+# brotli (RFC 7932), pure Rust. BSD-3-Clause AND MIT.
+brotli = "8"
+# lz4 frame (LZ4F) + raw block, pure Rust. MIT.
+lz4_flex = "0.13"
+# snappy framed + raw, pure Rust. BSD-3-Clause.
+snap = "1.1"
+# xz / lzma, pure Rust (default backend). MIT.
+lzma-rs = "0.3"
+# bzip2 via libbz2-rs-sys (pure Rust) default backend. MIT OR Apache-2.0.
+bzip2 = "0.6"
+
+[dev-dependencies]
+proptest = "1"
+
+[features]
+default = []
+# Optional C `liblzma` (xz-utils) backend for xz/lzma — faster/more battle-tested
+# but pulls a C dependency and the xz-utils supply-chain history (CVE-2024-3094).
+# Off by default; the pure-Rust `lzma-rs` backend ships by default. `codecs()`
+# reflects which xz backend is compiled in.
+liblzma = ["dep:liblzma"]
+
+[dependencies.liblzma]
+version = "0.4"
+optional = true
+
+[lints.rust]
+unsafe_code = "forbid"
