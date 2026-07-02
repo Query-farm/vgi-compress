@@ -37,6 +37,7 @@ impl ScalarFunction for Codecs {
         );
         tags.push(("vgi.example_queries".into(),
             "[{\"description\":\"List every codec this build supports.\",\"sql\":\"SELECT compress.main.codecs() AS codecs\"},{\"description\":\"Is zstd supported?\",\"sql\":\"SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd\"}]".into()));
+        tags.push(("vgi.category".into(), "discovery".into()));
         FunctionMetadata {
             description: "List the codec names this build supports (reflects feature flags)".into(),
             return_type: Some(list_varchar()),

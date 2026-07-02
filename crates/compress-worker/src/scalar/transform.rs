@@ -78,6 +78,7 @@ impl ScalarFunction for Compress {
         // VGI509: at least one guaranteed-runnable, output-verified example.
         tags.push(("vgi.executable_examples".into(),
             "[{\"description\":\"Round-trip a blob through gzip and read it back as text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hello, world'::BLOB, 'gzip'), 'gzip')::VARCHAR AS roundtrip\",\"expected_result\":[{\"roundtrip\":\"hello, world\"}]},{\"description\":\"Detect the codec of a zstd-compressed blob.\",\"sql\":\"SELECT compress.main.detect_codec(compress.main.compress('payload'::BLOB, 'zstd')) AS codec\",\"expected_result\":[{\"codec\":\"zstd\"}]}]".into()));
+        tags.push(("vgi.category".into(), "encode".into()));
         FunctionMetadata {
             description: if self.with_level {
                 "Compress a BLOB with the given codec and explicit level (codec default if NULL)"
@@ -185,6 +186,7 @@ impl ScalarFunction for Decompress {
         } else {
             "[{\"description\":\"Decompress a gzip blob and cast to text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hi'::BLOB,'gzip'), 'gzip')::VARCHAR AS body\"}]"
         }.into()));
+        tags.push(("vgi.category".into(), "decode".into()));
         FunctionMetadata {
             description: if self.with_cap {
                 "Decompress a BLOB with the given codec, capping output at max_output_bytes"
@@ -205,7 +207,7 @@ impl ScalarFunction for Decompress {
 
     fn argument_specs(&self) -> Vec<ArgSpec> {
         let mut specs = vec![
-            ArgSpec::any_column("input", 0, "The compressed BLOB to decode."),
+            ArgSpec::any_column("input", 0, "The compressed payload to decode."),
             ArgSpec::column_typed(
                 "codec",
                 1,
@@ -289,6 +291,7 @@ impl ScalarFunction for DecompressAuto {
         );
         tags.push(("vgi.example_queries".into(),
             "[{\"description\":\"Auto-detect and decompress a gzip blob with a 64 MiB cap.\",\"sql\":\"SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB,'gzip'), 67108864) AS plaintext\"}]".into()));
+        tags.push(("vgi.category".into(), "decode".into()));
         FunctionMetadata {
             description: if self.with_cap {
                 "Auto-detect the codec by magic bytes and decompress, capping output at max_output_bytes"
@@ -314,7 +317,7 @@ impl ScalarFunction for DecompressAuto {
             "input",
             0,
             DataType::Binary,
-            "The compressed BLOB to auto-detect (by magic bytes) and decode.",
+            "The compressed payload to auto-detect (by magic bytes) and decode.",
         )];
         if self.with_cap {
             specs.push(ArgSpec::any_column(

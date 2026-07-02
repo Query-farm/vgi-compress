@@ -17,6 +17,33 @@ pub fn keywords_json(keywords: &str) -> String {
     format!("[{}]", items.join(","))
 }
 
+/// Build the `vgi.agent_test_tasks` JSON value: a fixed suite of analyst tasks
+/// that `vgi-lint simulate` (the `--ai` agent-check) runs. Each
+/// `(name, prompt, reference_sql)` triple becomes a task object; the `prompt` is
+/// shown to the simulated analyst while `reference_sql` (the canonical, hidden
+/// solution) grades the answer by comparing result sets. Every function here is a
+/// pure, deterministic transform, so a fixed `reference_sql` yields a stable
+/// reference result run-to-run.
+pub fn agent_test_tasks_json(tasks: &[(&str, &str, &str)]) -> String {
+    fn esc(s: &str) -> String {
+        s.replace('\\', "\\\\")
+            .replace('"', "\\\"")
+            .replace('\n', "\\n")
+    }
+    let items: Vec<String> = tasks
+        .iter()
+        .map(|(name, prompt, reference_sql)| {
+            format!(
+                "{{\"name\":\"{}\",\"prompt\":\"{}\",\"reference_sql\":\"{}\"}}",
+                esc(name),
+                esc(prompt),
+                esc(reference_sql)
+            )
+        })
+        .collect();
+    format!("[{}]", items.join(","))
+}
+
 /// Build the four standard per-object discovery tags.
 pub fn object_tags(
     title: &str,

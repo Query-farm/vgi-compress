@@ -34,6 +34,7 @@ impl ScalarFunction for DetectCodec {
         );
         tags.push(("vgi.example_queries".into(),
             "[{\"description\":\"Identify the codec of a compressed blob.\",\"sql\":\"SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB,'zstd')) AS codec\"}]".into()));
+        tags.push(("vgi.category".into(), "discovery".into()));
         FunctionMetadata {
             description: "Return the codec name of a BLOB by magic bytes, or 'unknown'".into(),
             return_type: Some(DataType::Utf8),
@@ -53,7 +54,7 @@ impl ScalarFunction for DetectCodec {
         vec![ArgSpec::any_column(
             "input",
             0,
-            "The BLOB to identify by magic bytes. Headerless codecs return 'unknown'.",
+            "The payload to identify by magic bytes. Headerless codecs return 'unknown'.",
         )]
     }
 

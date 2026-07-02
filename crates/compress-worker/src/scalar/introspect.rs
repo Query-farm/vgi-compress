@@ -41,6 +41,7 @@ impl ScalarFunction for CompressedSize {
         );
         tags.push(("vgi.example_queries".into(),
             "[{\"description\":\"How many bytes would this blob be as zstd level 19?\",\"sql\":\"SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19) AS bytes_out\"}]".into()));
+        tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: if self.with_level {
                 "Byte length of compress(input, codec, level) at an explicit level, without materializing the output"
@@ -62,7 +63,7 @@ impl ScalarFunction for CompressedSize {
 
     fn argument_specs(&self) -> Vec<ArgSpec> {
         let mut specs = vec![
-            ArgSpec::any_column("input", 0, "The BLOB whose compressed size to measure."),
+            ArgSpec::any_column("input", 0, "The payload whose compressed size to measure."),
             ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to compress with."),
         ];
         if self.with_level {
@@ -133,6 +134,7 @@ impl ScalarFunction for DecompressedSize {
         );
         tags.push(("vgi.example_queries".into(),
             "[{\"description\":\"How big does this gzip blob expand to?\",\"sql\":\"SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB,'gzip'), 'gzip') AS bytes\"}]".into()));
+        tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: if self.with_cap {
                 "Decompressed byte length of a compressed BLOB, capped at max_output_bytes (NULL past the cap)"
@@ -157,7 +159,7 @@ impl ScalarFunction for DecompressedSize {
             ArgSpec::any_column(
                 "input",
                 0,
-                "The compressed BLOB whose decoded size to measure.",
+                "The compressed payload whose decoded size to measure.",
             ),
             ArgSpec::column_typed(
                 "codec",
@@ -229,6 +231,7 @@ impl ScalarFunction for Ratio {
         );
         tags.push(("vgi.example_queries".into(),
             "[{\"description\":\"What compression ratio does zstd-19 achieve on this blob?\",\"sql\":\"SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19) AS ratio\"}]".into()));
+        tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: if self.with_level {
                 "Output-over-input compression ratio at an explicit level (< 1.0 means it shrank; NULL if empty)"
@@ -250,7 +253,11 @@ impl ScalarFunction for Ratio {
 
     fn argument_specs(&self) -> Vec<ArgSpec> {
         let mut specs = vec![
-            ArgSpec::any_column("input", 0, "The BLOB whose compression ratio to measure."),
+            ArgSpec::any_column(
+                "input",
+                0,
+                "The payload whose compression ratio to measure.",
+            ),
             ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to compress with."),
         ];
         if self.with_level {
@@ -317,6 +324,7 @@ impl ScalarFunction for IsValid {
         );
         tags.push(("vgi.example_queries".into(),
             "[{\"description\":\"Is this blob a valid gzip stream?\",\"sql\":\"SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB,'gzip'), 'gzip') AS ok\"}]".into()));
+        tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: "TRUE iff the BLOB is a well-formed stream for the codec (never errors)"
                 .into(),
@@ -333,7 +341,7 @@ impl ScalarFunction for IsValid {
 
     fn argument_specs(&self) -> Vec<ArgSpec> {
         vec![
-            ArgSpec::any_column("input", 0, "The BLOB to test for well-formedness."),
+            ArgSpec::any_column("input", 0, "The payload to test for well-formedness."),
             ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to validate against."),
         ]
     }

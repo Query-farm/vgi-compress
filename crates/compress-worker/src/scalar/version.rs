@@ -18,6 +18,14 @@ impl ScalarFunction for CompressVersion {
     }
 
     fn metadata(&self) -> FunctionMetadata {
+        let mut tags = crate::meta::object_tags(
+            "Compress Worker Version",
+            "Return the semantic version string of the running compress worker binary. Useful \
+             for diagnostics and confirming which build is attached.",
+            "Return the compress worker version string, e.g. `compress_version()` → '0.1.0'.",
+            "version, build version, compress_version, diagnostics, worker version, semver",
+        );
+        tags.push(("vgi.category".into(), "discovery".into()));
         FunctionMetadata {
             description: "Returns the compress worker version string".into(),
             return_type: Some(DataType::Utf8),
@@ -26,13 +34,7 @@ impl ScalarFunction for CompressVersion {
                 description: "Return the compress worker version string.".into(),
                 expected_output: None,
             }],
-            tags: crate::meta::object_tags(
-                "Compress Worker Version",
-                "Return the semantic version string of the running compress worker binary. Useful \
-                 for diagnostics and confirming which build is attached.",
-                "Return the compress worker version string, e.g. `compress_version()` → '0.1.0'.",
-                "version, build version, compress_version, diagnostics, worker version, semver",
-            ),
+            tags,
             ..Default::default()
         }
     }
