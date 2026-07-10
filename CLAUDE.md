@@ -12,7 +12,8 @@ block), `snappy` (framed + raw), `xz`, `lzma`, `bzip2` — plus codec
 auto-detection by magic bytes, level control, and size/ratio introspection.
 Functions live under catalog `compress`, schema `main`.
 
-Built on the published VGI Rust SDK (`vgi = "0.9.5"` from crates.io), arrow 59.
+Built on the published VGI Rust SDK (`vgi = "0.17.0"`, `vgi-rpc = "0.11.0"` from
+crates.io), arrow 59.
 Modeled on `../vgi-cbor` (the MIT BLOB-transform reference) and
 `../vgi-fixedformat`. The repo builds standalone — no local SDK checkout, no
 `path` dependency on the SDK.
@@ -87,8 +88,8 @@ cargo test --workspace --all-features
 RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --workspace
 cargo build --release --bin compress-worker
 ./run_tests.sh                                          # haybarn SQLLogic E2E
-uvx --from vgi-lint-check==0.37.0 vgi-lint lint \
-    target/release/compress-worker --catalog compress --fail-on info   # 100/100, no findings
+uvx --from vgi-lint-check vgi-lint lint \
+    target/release/compress-worker --fail-on info   # score 98, no findings
 ```
 
 The `--features liblzma` build/test is a separate CI leg (C `xz-utils` backend,
