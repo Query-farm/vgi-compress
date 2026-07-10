@@ -106,7 +106,11 @@ impl ScalarFunction for Compress {
                 DataType::Utf8,
                 "The codec name (case-insensitive): zstd, gzip, zlib, deflate, brotli, lz4, \
                  lz4_block, snappy, snappy_raw, xz, lzma, bzip2.",
-            ),
+            )
+            // VGI317: the codec set is a closed vocabulary — expose it as a
+            // machine-readable choice list sourced from the codec registry so
+            // discovery and behaviour cannot drift.
+            .with_choices(compress_core::codecs()),
         ];
         if self.with_level {
             specs.push(ArgSpec::any_column(
@@ -214,7 +218,9 @@ impl ScalarFunction for Decompress {
                 DataType::Utf8,
                 "The codec the input is compressed with (case-insensitive): zstd, gzip, zlib, \
                  deflate, brotli, lz4, lz4_block, snappy, snappy_raw, xz, lzma, bzip2.",
-            ),
+            )
+            // VGI317: closed codec vocabulary, sourced from the codec registry.
+            .with_choices(compress_core::codecs()),
         ];
         if self.with_cap {
             specs.push(ArgSpec::any_column(

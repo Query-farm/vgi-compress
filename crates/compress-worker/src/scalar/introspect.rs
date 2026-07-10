@@ -64,7 +64,8 @@ impl ScalarFunction for CompressedSize {
     fn argument_specs(&self) -> Vec<ArgSpec> {
         let mut specs = vec![
             ArgSpec::any_column("input", 0, "The payload whose compressed size to measure."),
-            ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to compress with."),
+            ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to compress with.")
+                .with_choices(compress_core::codecs()),
         ];
         if self.with_level {
             specs.push(ArgSpec::any_column(
@@ -166,7 +167,8 @@ impl ScalarFunction for DecompressedSize {
                 1,
                 DataType::Utf8,
                 "The codec the input is compressed with.",
-            ),
+            )
+            .with_choices(compress_core::codecs()),
         ];
         if self.with_cap {
             specs.push(ArgSpec::any_column(
@@ -258,7 +260,8 @@ impl ScalarFunction for Ratio {
                 0,
                 "The payload whose compression ratio to measure.",
             ),
-            ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to compress with."),
+            ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to compress with.")
+                .with_choices(compress_core::codecs()),
         ];
         if self.with_level {
             specs.push(ArgSpec::any_column(
@@ -342,7 +345,8 @@ impl ScalarFunction for IsValid {
     fn argument_specs(&self) -> Vec<ArgSpec> {
         vec![
             ArgSpec::any_column("input", 0, "The payload to test for well-formedness."),
-            ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to validate against."),
+            ArgSpec::column_typed("codec", 1, DataType::Utf8, "The codec to validate against.")
+                .with_choices(compress_core::codecs()),
         ]
     }
 
