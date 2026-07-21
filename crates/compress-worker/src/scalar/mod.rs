@@ -5,7 +5,6 @@ mod codecs;
 mod detect;
 mod introspect;
 mod transform;
-mod version;
 
 use vgi::Worker;
 
@@ -14,8 +13,6 @@ use vgi::Worker;
 /// 3-arg (resp. 1-arg / 2-arg) arity overload, because DuckDB binds a registered
 /// signature by arity.
 pub fn register(worker: &mut Worker) {
-    worker.register_scalar(version::CompressVersion);
-
     // compress(blob, codec [, level])
     worker.register_scalar(transform::Compress { with_level: false });
     worker.register_scalar(transform::Compress { with_level: true });

@@ -131,12 +131,6 @@ SELECT decompress(NULL::BLOB, 'gzip') IS NULL;
 ----
 true
 
-# Worker version is a non-empty string.
-query T
-SELECT length(compress_version()) > 0;
-----
-true
-
 statement ok
 USE memory;
 

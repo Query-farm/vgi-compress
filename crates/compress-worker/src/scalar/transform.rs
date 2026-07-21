@@ -10,10 +10,7 @@
 use arrow_array::{ArrayRef, RecordBatch};
 use arrow_schema::DataType;
 use compress_core::CodecError;
-use vgi::{
-    ArgSpec, BindParams, BindResponse, FunctionExample, FunctionMetadata, ProcessParams,
-    ScalarFunction,
-};
+use vgi::{ArgSpec, BindParams, BindResponse, FunctionMetadata, ProcessParams, ScalarFunction};
 use vgi_rpc::{Result, RpcError};
 
 use crate::arrow_io::{binary_array, blob_bytes, int_val, text_str};
@@ -43,38 +40,38 @@ impl ScalarFunction for Compress {
     }
 
     fn metadata(&self) -> FunctionMetadata {
-        let example = if self.with_level {
-            FunctionExample {
-                sql: "SELECT compress.main.compress('hello'::BLOB, 'zstd', 19);".into(),
-                description: "Compress a blob with zstd at level 19.".into(),
-                expected_output: None,
-            }
-        } else {
-            FunctionExample {
-                sql: "SELECT compress.main.compress('hello'::BLOB, 'gzip');".into(),
-                description: "Compress a blob with gzip at the default level.".into(),
-                expected_output: None,
-            }
-        };
+        // DuckDB aggregates the 2-arg and 3-arg overloads into a single function
+        // row whose native examples union both arities, so BOTH overloads publish
+        // the full described example set (VGI515) — every native example then has
+        // a described `vgi.example_queries` counterpart to dedupe against.
+        let examples: &[(&str, &str)] = &[
+            (
+                "Compress a blob with gzip at the default level.",
+                "SELECT compress.main.compress('the quick brown fox'::BLOB, 'gzip') AS packed",
+            ),
+            (
+                "Compress a blob with zstd at level 19.",
+                "SELECT compress.main.compress('the quick brown fox'::BLOB, 'zstd', 19) AS packed",
+            ),
+        ];
         let mut tags = crate::meta::object_tags(
             "Compress a BLOB",
-            "Compress a BLOB with the named codec (case-insensitive): zstd, gzip, zlib, deflate, \
+            "Compress a `BLOB` with the named codec (case-insensitive): zstd, gzip, zlib, deflate, \
              brotli, lz4, lz4_block, snappy, snappy_raw, xz, lzma, bzip2. The optional third \
              argument is the compression level — NULL or omitted uses the codec default; an \
              out-of-range level clamps to the codec's range; it is ignored for level-less codecs \
              (snappy/snappy_raw). Returns the compressed bytes in the codec's canonical container \
              (framed where the codec has a frame). NULL input → NULL; empty input → the codec's \
              valid empty stream. The inverse of decompress.",
-            "Compress a BLOB with a codec, e.g. `compress(b, 'zstd', 19)`. Level is optional \
-             (codec default when omitted). Returns a BLOB; the inverse of `decompress`.",
+            "Compress a `BLOB` with a codec, e.g. `compress(b, 'zstd', 19)`. Level is optional \
+             (codec default when omitted). Returns a `BLOB`; the inverse of `decompress`.",
             "compress, deflate, gzip, zstd, brotli, lz4, snappy, xz, lzma, bzip2, encode, pack, \
              shrink, codec, blob, level, transcode",
         );
-        tags.push(("vgi.example_queries".into(), if self.with_level {
-            "[{\"description\":\"Compress a blob with zstd level 19.\",\"sql\":\"SELECT compress.main.compress('the quick brown fox'::BLOB, 'zstd', 19) AS packed\"}]"
-        } else {
-            "[{\"description\":\"Compress a blob with gzip at the default level.\",\"sql\":\"SELECT compress.main.compress('the quick brown fox'::BLOB, 'gzip') AS packed\"}]"
-        }.into()));
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         // VGI509: at least one guaranteed-runnable, output-verified example.
         tags.push(("vgi.executable_examples".into(),
             "[{\"description\":\"Round-trip a blob through gzip and read it back as text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hello, world'::BLOB, 'gzip'), 'gzip')::VARCHAR AS roundtrip\",\"expected_result\":[{\"roundtrip\":\"hello, world\"}]},{\"description\":\"Detect the codec of a zstd-compressed blob.\",\"sql\":\"SELECT compress.main.detect_codec(compress.main.compress('payload'::BLOB, 'zstd')) AS codec\",\"expected_result\":[{\"codec\":\"zstd\"}]}]".into()));
@@ -87,7 +84,7 @@ impl ScalarFunction for Compress {
             }
             .into(),
             return_type: Some(DataType::Binary),
-            examples: vec![example],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }
@@ -170,26 +167,39 @@ impl ScalarFunction for Decompress {
     }
 
     fn metadata(&self) -> FunctionMetadata {
+        // Both arity overloads aggregate into one function row (see `compress`),
+        // so publish the full described example set on each.
+        let examples: &[(&str, &str)] = &[
+            (
+                "Decompress a gzip blob and cast the bytes back to text.",
+                "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), \
+                 'gzip')::VARCHAR AS body",
+            ),
+            (
+                "Decompress a gzip blob with a 64 MiB output cap.",
+                "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), \
+                 'gzip', 67108864) AS body",
+            ),
+        ];
         let mut tags = crate::meta::object_tags(
             "Decompress a BLOB",
-            "Decompress a BLOB with the named codec (the inverse of compress). The optional third \
+            "Decompress a `BLOB` with the named codec (the inverse of compress). The optional third \
              argument max_output_bytes is the decompression-bomb guard: decoding aborts the row \
              once output would exceed the cap and returns a per-row error, so the worker never \
              OOMs. NULL/omitted uses the worker's configured default cap (the \
              compress_max_output_bytes ATTACH option / env, default 256 MiB); pass a large value \
              to opt out per call. Malformed, truncated, or wrong-codec input returns a clean \
              per-row error, never a panic. NULL input → NULL.",
-            "Decompress a BLOB with a codec, e.g. `decompress(b, 'gzip')`. Optional \
-             `max_output_bytes` caps output (bomb guard; default 256 MiB). Returns a BLOB; the \
+            "Decompress a `BLOB` with a codec, e.g. `decompress(b, 'gzip')`. Optional \
+             `max_output_bytes` caps output (bomb guard; default 256 MiB). Returns a `BLOB`; the \
              inverse of `compress`.",
             "decompress, inflate, gunzip, unzstd, decode, unpack, expand, codec, blob, \
              decompression bomb, max_output_bytes, gzip, zstd, brotli, lz4, snappy, xz, bzip2",
         );
-        tags.push(("vgi.example_queries".into(), if self.with_cap {
-            "[{\"description\":\"Decompress a gzip blob with a 64 MiB output cap.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hi'::BLOB,'gzip'), 'gzip', 67108864) AS body\"}]"
-        } else {
-            "[{\"description\":\"Decompress a gzip blob and cast to text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hi'::BLOB,'gzip'), 'gzip')::VARCHAR AS body\"}]"
-        }.into()));
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "decode".into()));
         FunctionMetadata {
             description: if self.with_cap {
@@ -199,11 +209,7 @@ impl ScalarFunction for Decompress {
             }
             .into(),
             return_type: Some(DataType::Binary),
-            examples: vec![FunctionExample {
-                sql: "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB,'gzip'), 'gzip')::VARCHAR;".into(),
-                description: "Decompress a gzip'd blob and cast to text.".into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }
@@ -281,6 +287,20 @@ impl ScalarFunction for DecompressAuto {
     }
 
     fn metadata(&self) -> FunctionMetadata {
+        // Both arity overloads aggregate into one function row (see `compress`),
+        // so publish the full described example set on each.
+        let examples: &[(&str, &str)] = &[
+            (
+                "Auto-detect the codec by magic bytes and decompress a blob to text.",
+                "SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, \
+                 'gzip'))::VARCHAR AS plaintext",
+            ),
+            (
+                "Auto-detect and decompress a gzip blob with a 64 MiB/row output cap.",
+                "SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'), \
+                 67108864) AS plaintext",
+            ),
+        ];
         let mut tags = crate::meta::object_tags(
             "Auto-detect & Decompress a BLOB",
             "Detect the codec by magic bytes, then decompress (the inverse of compress without \
@@ -291,12 +311,14 @@ impl ScalarFunction for DecompressAuto {
              guard as decompress (optional max_output_bytes; default 256 MiB). NULL input → NULL.",
             "Auto-detect the codec by magic bytes and decompress, e.g. \
              `decompress_auto(value, 67108864)`. Only magic-bearing codecs resolve; headerless \
-             ones error. Returns a BLOB.",
+             ones error. Returns a `BLOB`.",
             "decompress_auto, auto-detect, magic bytes, sniff codec, mixed codec, kafka, decode, \
              gunzip, unzstd, blob, decompression bomb, max_output_bytes",
         );
-        tags.push(("vgi.example_queries".into(),
-            "[{\"description\":\"Auto-detect and decompress a gzip blob with a 64 MiB cap.\",\"sql\":\"SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB,'gzip'), 67108864) AS plaintext\"}]".into()));
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "decode".into()));
         FunctionMetadata {
             description: if self.with_cap {
@@ -306,11 +328,7 @@ impl ScalarFunction for DecompressAuto {
             }
             .into(),
             return_type: Some(DataType::Binary),
-            examples: vec![FunctionExample {
-                sql: "SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB,'gzip'), 67108864);".into(),
-                description: "Auto-detect and decompress a blob, cap 64 MiB/row.".into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }

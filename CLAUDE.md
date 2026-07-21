@@ -47,7 +47,7 @@ crates/compress-worker/    # arrow + vgi: maps core results onto DuckDB types, s
   src/scalar/detect.rs     #   detect_codec
   src/scalar/introspect.rs #   compressed_size, decompressed_size, ratio, is_valid
   src/scalar/codecs.rs     #   codecs() -> LIST<VARCHAR>
-  src/scalar/version.rs    #   compress_version()
+                           #   (build version is the catalog implementation_version)
 test/sql/compress.test     # haybarn SQLLogic E2E over in-engine fixtures (no external files)
 ci/                        # check-version.sh, run-integration.sh, preprocess-require.awk
 ```
@@ -89,7 +89,7 @@ RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --workspace
 cargo build --release --bin compress-worker
 ./run_tests.sh                                          # haybarn SQLLogic E2E
 uvx --from vgi-lint-check vgi-lint lint \
-    target/release/compress-worker --fail-on info   # score 98, no findings
+    target/release/compress-worker --fail-on info   # score 100, no findings
 ```
 
 The `--features liblzma` build/test is a separate CI leg (C `xz-utils` backend,

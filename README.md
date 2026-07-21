@@ -78,7 +78,9 @@ names are case-insensitive.
 | Ratio | `ratio(input BLOB, codec VARCHAR [, level])` | `DOUBLE` (out/in) |
 | Validate | `is_valid(input BLOB, codec VARCHAR)` | `BOOLEAN` |
 | Discover | `codecs()` | `LIST<VARCHAR>` |
-| Version | `compress_version()` | `VARCHAR` |
+
+The running build version is published as the catalog `implementation_version`
+(read it via `duckdb_databases()` / `vgi_catalogs()`), not as a scalar function.
 
 `NULL` input flows through to `NULL`. Empty input compresses to the codec's valid
 empty stream and round-trips back to empty. An out-of-range `level` clamps to the

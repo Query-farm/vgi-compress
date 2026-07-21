@@ -2,10 +2,7 @@
 
 use arrow_array::{ArrayRef, RecordBatch};
 use arrow_schema::DataType;
-use vgi::{
-    ArgSpec, BindParams, BindResponse, FunctionExample, FunctionMetadata, ProcessParams,
-    ScalarFunction,
-};
+use vgi::{ArgSpec, BindParams, BindResponse, FunctionMetadata, ProcessParams, ScalarFunction};
 use vgi_rpc::{Result, RpcError};
 
 use crate::arrow_io::{blob_bytes, string_array};
@@ -20,31 +17,32 @@ impl ScalarFunction for DetectCodec {
     fn metadata(&self) -> FunctionMetadata {
         let mut tags = crate::meta::object_tags(
             "Detect Codec by Magic Bytes",
-            "Return the codec name a BLOB is compressed with ('gzip', 'zstd', 'xz', …) by \
+            "Return the codec name a `BLOB` is compressed with ('gzip', 'zstd', 'xz', …) by \
              magic-byte match, validated against a trial decode of the leading block to reject \
              weak-magic false positives. Returns 'unknown' when no signature matches — which \
              includes every HEADERLESS codec (brotli, deflate, lz4_block, snappy_raw carry no \
              magic and can never be detected; use the explicit decompress form for those). Cheap: \
              inspects only the first few bytes plus a bounded trial. Never errors. NULL input → \
              NULL.",
-            "Return the codec of a BLOB by magic bytes, e.g. `detect_codec(b)` → 'gzip', or \
+            "Return the codec of a `BLOB` by magic bytes, e.g. `detect_codec(b)` → 'gzip', or \
              'unknown' for headerless/unrecognized input. Never errors.",
             "detect_codec, sniff, magic bytes, identify codec, gzip, zstd, xz, bzip2, lz4, \
              snappy, auto-detect, unknown",
         );
-        tags.push(("vgi.example_queries".into(),
-            "[{\"description\":\"Identify the codec of a compressed blob.\",\"sql\":\"SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB,'zstd')) AS codec\"}]".into()));
+        let examples: &[(&str, &str)] = &[(
+            "Identify the codec of a compressed blob from its magic bytes.",
+            "SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB, 'zstd')) \
+             AS codec",
+        )];
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "discovery".into()));
         FunctionMetadata {
             description: "Return the codec name of a BLOB by magic bytes, or 'unknown'".into(),
             return_type: Some(DataType::Utf8),
-            examples: vec![FunctionExample {
-                sql:
-                    "SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB,'gzip'));"
-                        .into(),
-                description: "Identify the codec of a compressed blob.".into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }

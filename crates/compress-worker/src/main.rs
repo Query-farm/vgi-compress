@@ -36,11 +36,12 @@ fn catalog_metadata(name: &str) -> CatalogModel {
     CatalogModel {
         name: name.to_string(),
         comment: Some(
-            "Multi-codec (de)compression over a DuckDB BLOB column — zstd, gzip, zlib, deflate, \
+            "Multi-codec (de)compression over a DuckDB `BLOB` column — zstd, gzip, zlib, deflate, \
              brotli, lz4, snappy, xz, lzma, bzip2 — with codec auto-detection and a \
              decompression-bomb guard."
                 .to_string(),
         ),
+        implementation_version: Some(compress_core::version().to_string()),
         tags: vec![
             (
                 "vgi.title".to_string(),
@@ -56,7 +57,7 @@ fn catalog_metadata(name: &str) -> CatalogModel {
             ),
             (
                 "vgi.doc_llm".to_string(),
-                "Compress and decompress a DuckDB BLOB column entirely inside the query engine, \
+                "Compress and decompress a DuckDB `BLOB` column entirely inside the query engine, \
                  across many codecs — zstd, gzip, zlib, deflate (raw), brotli, lz4 (frame and \
                  block), snappy (framed and raw), xz, lzma, and bzip2. Fills the gap DuckDB core \
                  leaves open: core reads compressed files, but offers no way to decode a COLUMN \
@@ -175,12 +176,6 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                          column named has_zstd.",
                         "SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd",
                     ),
-                    (
-                        "worker_version",
-                        "What version of the compress worker is currently running? Return a \
-                         single row with one column named version.",
-                        "SELECT compress.main.compress_version() AS version",
-                    ),
                 ]),
             ),
         ],
@@ -188,7 +183,7 @@ fn catalog_metadata(name: &str) -> CatalogModel {
         schemas: vec![CatSchema {
             name: "main".to_string(),
             comment: Some(
-                "Multi-codec compress / decompress / detect / introspect functions over a BLOB."
+                "Multi-codec compress / decompress / detect / introspect functions over a `BLOB`."
                     .to_string(),
             ),
             tags: vec![
@@ -209,7 +204,7 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                 ),
                 (
                     "vgi.doc_llm".to_string(),
-                    "Multi-codec (de)compression over a DuckDB BLOB column, grouped into one \
+                    "Multi-codec (de)compression over a DuckDB `BLOB` column, grouped into one \
                      schema: transforms that encode and decode bytes, automatic codec detection \
                      and identification from magic bytes, size / ratio / validity introspection, \
                      and codec discovery. Codecs span zstd, gzip, zlib, deflate, brotli, lz4 \
@@ -231,8 +226,8 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                      or auto-detected, under a decompression-bomb guard.\n\
                      - **introspection** — measure compressed and decompressed size, compression \
                      ratio, and stream validity without materializing the output.\n\
-                     - **discovery** — identify a blob's codec, list the codecs this build \
-                     supports, and report the worker version.\n\n\
+                     - **discovery** — identify a blob's codec and list the codecs this build \
+                     supports.\n\n\
                      Every codec — zstd, gzip, zlib, deflate, brotli, lz4, snappy, xz, lzma, and \
                      bzip2 — shares this one uniform surface over a `BLOB` column."
                         .to_string(),
@@ -247,19 +242,38 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                      bounded by a decompression-bomb guard.\"},{\"name\":\"introspection\",\
                      \"description\":\"Measure compressed and decompressed size, compression \
                      ratio, and stream validity without materializing the output.\"},{\"name\":\
-                     \"discovery\",\"description\":\"Identify a blob's codec, list the codecs this \
-                     build supports, and report the worker version.\"}]"
+                     \"discovery\",\"description\":\"Identify a blob's codec and list the codecs \
+                     this build supports.\"}]"
                         .to_string(),
                 ),
                 (
                     "vgi.example_queries".to_string(),
-                    "SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR FROM http_logs;\n\
-                     SELECT compress.main.detect_codec(value) FROM kafka_messages;\n\
-                     SELECT compress.main.decompress_auto(value, 67108864) FROM kafka_messages;\n\
-                     SELECT compress.main.ratio(blob, 'zstd', 19) FROM report;\n\
-                     SELECT compress.main.compressed_size(blob, 'zstd', 19) FROM report;\n\
-                     SELECT compress.main.codecs();"
-                        .to_string(),
+                    meta::example_queries_json(&[
+                        (
+                            "Decode a gzip'd HTTP body column to text at scan time.",
+                            "SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR AS body \
+                             FROM http_logs",
+                        ),
+                        (
+                            "Identify the codec of each message in a mixed-codec column.",
+                            "SELECT id, compress.main.detect_codec(value) AS codec \
+                             FROM kafka_messages",
+                        ),
+                        (
+                            "Auto-detect and decode a mixed-codec column with a 64 MiB/row cap.",
+                            "SELECT compress.main.decompress_auto(value, 67108864) AS payload \
+                             FROM kafka_messages",
+                        ),
+                        (
+                            "Audit the zstd-19 compression ratio of a blob column.",
+                            "SELECT avg(compress.main.ratio(blob, 'zstd', 19)) AS avg_ratio \
+                             FROM report",
+                        ),
+                        (
+                            "List every codec this build supports.",
+                            "SELECT compress.main.codecs() AS codecs",
+                        ),
+                    ]),
                 ),
             ],
             views: Vec::new(),

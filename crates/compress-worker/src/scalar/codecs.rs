@@ -4,10 +4,7 @@ use std::sync::Arc;
 
 use arrow_array::{ArrayRef, RecordBatch};
 use arrow_schema::{DataType, Field};
-use vgi::{
-    ArgSpec, BindParams, BindResponse, FunctionExample, FunctionMetadata, ProcessParams,
-    ScalarFunction,
-};
+use vgi::{ArgSpec, BindParams, BindResponse, FunctionMetadata, ProcessParams, ScalarFunction};
 use vgi_rpc::{Result, RpcError};
 
 use crate::arrow_io::list_string_single;
@@ -32,20 +29,28 @@ impl ScalarFunction for Codecs {
              codec opt-out). Use the returned names as the codec argument to compress / \
              decompress / compressed_size / ratio / is_valid.",
             "List the codec names this build supports, e.g. `codecs()` → ['zstd','gzip',…]. \
-             Returns LIST<VARCHAR>.",
+             Returns `LIST(VARCHAR)`.",
             "codecs, supported codecs, list codecs, discovery, available, what codecs, capability",
         );
-        tags.push(("vgi.example_queries".into(),
-            "[{\"description\":\"List every codec this build supports.\",\"sql\":\"SELECT compress.main.codecs() AS codecs\"},{\"description\":\"Is zstd supported?\",\"sql\":\"SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd\"}]".into()));
+        let examples: &[(&str, &str)] = &[
+            (
+                "List every codec this build supports.",
+                "SELECT compress.main.codecs() AS codecs",
+            ),
+            (
+                "Check whether this build supports zstd.",
+                "SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd",
+            ),
+        ];
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "discovery".into()));
         FunctionMetadata {
             description: "List the codec names this build supports (reflects feature flags)".into(),
             return_type: Some(list_varchar()),
-            examples: vec![FunctionExample {
-                sql: "SELECT compress.main.codecs();".into(),
-                description: "List every supported codec name.".into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }

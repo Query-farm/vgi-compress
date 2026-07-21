@@ -4,10 +4,7 @@
 
 use arrow_array::{ArrayRef, RecordBatch};
 use arrow_schema::DataType;
-use vgi::{
-    ArgSpec, BindParams, BindResponse, FunctionExample, FunctionMetadata, ProcessParams,
-    ScalarFunction,
-};
+use vgi::{ArgSpec, BindParams, BindResponse, FunctionMetadata, ProcessParams, ScalarFunction};
 use vgi_rpc::{Result, RpcError};
 
 use crate::arrow_io::{blob_bytes, f64_opt_array, int_val, text_str, u64_opt_array};
@@ -36,11 +33,27 @@ impl ScalarFunction for CompressedSize {
              compress (NULL → codec default; out-of-range clamps; ignored for level-less codecs). \
              For 'how small would this get?' audits over a table. NULL input → NULL.",
             "Byte length of `compress(input, codec, level)` without materializing it, e.g. \
-             `compressed_size(b, 'zstd', 19)`. Returns UBIGINT.",
+             `compressed_size(b, 'zstd', 19)`. Returns `UBIGINT`.",
             "compressed_size, size, bytes, audit, how small, compress size, codec, level",
         );
-        tags.push(("vgi.example_queries".into(),
-            "[{\"description\":\"How many bytes would this blob be as zstd level 19?\",\"sql\":\"SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19) AS bytes_out\"}]".into()));
+        // Both arity overloads aggregate into one function row, so publish the
+        // full described example set on each (VGI515).
+        let examples: &[(&str, &str)] = &[
+            (
+                "How many bytes would this blob occupy as gzip at the default level?",
+                "SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'gzip') \
+                 AS bytes_out",
+            ),
+            (
+                "How many bytes would this blob occupy as zstd at level 19?",
+                "SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19) \
+                 AS bytes_out",
+            ),
+        ];
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: if self.with_level {
@@ -50,12 +63,7 @@ impl ScalarFunction for CompressedSize {
             }
             .into(),
             return_type: Some(DataType::UInt64),
-            examples: vec![FunctionExample {
-                sql: "SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19);"
-                    .into(),
-                description: "Compressed byte length without keeping the output.".into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }
@@ -123,18 +131,34 @@ impl ScalarFunction for DecompressedSize {
     fn metadata(&self) -> FunctionMetadata {
         let mut tags = crate::meta::object_tags(
             "Decoded Output Byte Length",
-            "Return the decompressed byte length of a compressed BLOB. For codecs that record the \
+            "Return the decompressed byte length of a compressed `BLOB`. For codecs that record the \
              size (gzip ISIZE) it is read directly and cheaply; otherwise the stream is counted \
              under the decompression-bomb guard. Returns NULL if a full decode would exceed the \
              cap (the optional max_output_bytes; default 256 MiB). NULL input → NULL. Malformed \
              input → per-row error.",
-            "Decompressed byte length of a compressed BLOB, e.g. `decompressed_size(b, 'gzip')`. \
-             NULL if decoding would exceed the cap. Returns UBIGINT.",
+            "Decompressed byte length of a compressed `BLOB`, e.g. `decompressed_size(b, 'gzip')`. \
+             NULL if decoding would exceed the cap. Returns `UBIGINT`.",
             "decompressed_size, uncompressed size, original size, isize, expand size, codec, \
              max_output_bytes, audit",
         );
-        tags.push(("vgi.example_queries".into(),
-            "[{\"description\":\"How big does this gzip blob expand to?\",\"sql\":\"SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB,'gzip'), 'gzip') AS bytes\"}]".into()));
+        // Both arity overloads aggregate into one function row, so publish the
+        // full described example set on each (VGI515).
+        let examples: &[(&str, &str)] = &[
+            (
+                "How big does this gzip blob expand to?",
+                "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown \
+                 fox'::BLOB, 'gzip'), 'gzip') AS bytes",
+            ),
+            (
+                "How big does this gzip blob expand to, under a 64 MiB cap?",
+                "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown \
+                 fox'::BLOB, 'gzip'), 'gzip', 67108864) AS bytes",
+            ),
+        ];
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: if self.with_cap {
@@ -144,12 +168,7 @@ impl ScalarFunction for DecompressedSize {
             }
             .into(),
             return_type: Some(DataType::UInt64),
-            examples: vec![FunctionExample {
-                sql: "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB,'gzip'), 'gzip');".into(),
-                description: "Decompressed byte length, read from the trailer where possible."
-                    .into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }
@@ -228,11 +247,26 @@ impl ScalarFunction for Ratio {
              value < 1.0 means the input shrank. The optional level matches compress. NULL on \
              empty input. For a compression audit over a table.",
             "Output-over-input ratio `compressed_size / length(input)`, e.g. `ratio(b, 'zstd', \
-             19)`; < 1.0 means it shrank. Returns DOUBLE (NULL on empty input).",
+             19)`; < 1.0 means it shrank. Returns `DOUBLE` (NULL on empty input).",
             "ratio, compression ratio, savings, shrink, out over in, audit, codec, level",
         );
-        tags.push(("vgi.example_queries".into(),
-            "[{\"description\":\"What compression ratio does zstd-19 achieve on this blob?\",\"sql\":\"SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19) AS ratio\"}]".into()));
+        // Both arity overloads aggregate into one function row, so publish the
+        // full described example set on each (VGI515).
+        let examples: &[(&str, &str)] = &[
+            (
+                "What compression ratio does gzip achieve on this blob at the default level?",
+                "SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'gzip') AS ratio",
+            ),
+            (
+                "What compression ratio does zstd at level 19 achieve on this blob?",
+                "SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19) \
+                 AS ratio",
+            ),
+        ];
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: if self.with_level {
@@ -242,12 +276,7 @@ impl ScalarFunction for Ratio {
             }
             .into(),
             return_type: Some(DataType::Float64),
-            examples: vec![FunctionExample {
-                sql: "SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19);"
-                    .into(),
-                description: "Compression ratio (out/in).".into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }
@@ -321,22 +350,25 @@ impl ScalarFunction for IsValid {
              bomb guard, output discarded. Never errors: corrupt, truncated, or wrong-codec input \
              is FALSE, not a throw (and a stream that would exceed the default cap is FALSE). NULL \
              input → NULL.",
-            "TRUE iff a BLOB is a well-formed stream for a codec, e.g. `is_valid(b, 'gzip')`. \
-             Never throws — bad input is FALSE. Returns BOOLEAN.",
+            "TRUE iff a `BLOB` is a well-formed stream for a codec, e.g. `is_valid(b, 'gzip')`. \
+             Never throws — bad input is FALSE. Returns `BOOLEAN`.",
             "is_valid, valid, well formed, check, verify, trial decode, codec, blob, total",
         );
-        tags.push(("vgi.example_queries".into(),
-            "[{\"description\":\"Is this blob a valid gzip stream?\",\"sql\":\"SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB,'gzip'), 'gzip') AS ok\"}]".into()));
+        let examples: &[(&str, &str)] = &[(
+            "Check whether a blob is a well-formed gzip stream.",
+            "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip') \
+             AS ok",
+        )];
+        tags.push((
+            "vgi.example_queries".into(),
+            crate::meta::example_queries_json(examples),
+        ));
         tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {
             description: "TRUE iff the BLOB is a well-formed stream for the codec (never errors)"
                 .into(),
             return_type: Some(DataType::Boolean),
-            examples: vec![FunctionExample {
-                sql: "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB,'gzip'), 'gzip');".into(),
-                description: "Test a blob for gzip well-formedness.".into(),
-                expected_output: None,
-            }],
+            examples: crate::meta::function_examples(examples),
             tags,
             ..Default::default()
         }
