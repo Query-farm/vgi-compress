@@ -25,8 +25,16 @@ concurrency:
 
 jobs:
   # Gate every image on the full unit + vgi-extension integration suite, so a
-  # broken worker is never imaged.
+  # broken worker is never imaged. ci.yml's `audit` job requests `checks: write`
+  # (rustsec/audit-check posts a check-run). A reusable workflow can never request
+  # a permission its CALLER job did not grant, so this job must grant `checks:
+  # write` (plus the `contents: read` the build jobs use) or the whole run fails
+  # to start with a startup_failure. On a direct push/PR the workflow-level
+  # default token already carries these, which is why this only bites via `uses:`.
   ci:
+    permissions:
+      contents: read
+      checks: write
     uses: ./.github/workflows/ci.yml
 
   publish:
