@@ -15,7 +15,7 @@ flate2 = "1.0"
 # brotli (RFC 7932), pure Rust. BSD-3-Clause AND MIT.
 brotli = "8"
 # lz4 frame (LZ4F) + raw block, pure Rust. MIT.
-lz4_flex = "0.13"
+lz4_flex = "0.14"
 # snappy framed + raw, pure Rust. BSD-3-Clause.
 snap = "1.1"
 # xz / lzma, pure Rust (default backend). MIT.
