@@ -11,3 +11,6 @@
 
 # haybarn unittest temp dir
 /duckdb_unittest_tempdir
+
+# Browser build output (wasm/build.sh)
+/wasm/dist
