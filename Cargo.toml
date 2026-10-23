@@ -27,12 +27,12 @@ repository = "https://github.com/Query-farm/vgi-compress"
 # tokio/mio/axum and bundled SQLite do not compile for wasm32, and the browser
 # transport serves over a byte channel rather than HTTP. Features are additive,
 # and the two are behind mutually-exclusive target cfgs.
-vgi = { version = "0.24", default-features = false }
-vgi-rpc = { version = "0.16", default-features = false, features = ["macros"] }
-arrow = { version = "59", default-features = false, features = ["ipc"] }
-arrow-array = "59"
-arrow-buffer = "59"
-arrow-schema = "59"
+vgi = { version = "0.46", default-features = false }
+vgi-rpc = { version = "0.32", default-features = false, features = ["macros"] }
+arrow = { version = "60", default-features = false, features = ["ipc"] }
+arrow-array = "60"
+arrow-buffer = "60"
+arrow-schema = "60"
 
 compress-core = { path = "crates/compress-core" }
 

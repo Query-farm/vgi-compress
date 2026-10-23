@@ -112,8 +112,9 @@ fn catalog_metadata(name: &str) -> CatalogModel {
             ),
             // VGI152/VGI920: a fixed analyst-task suite the `--ai` agent-check runs.
             // Every function is a pure, deterministic transform, so each
-            // reference_sql yields a stable reference result; prompts pin the
-            // output column name because grading is strict on names + values.
+            // reference_sql (in vgi-agent-tests.yaml) yields a stable reference
+            // result; prompts pin the output column name because grading is
+            // strict on names + values.
             (
                 "vgi.agent_test_tasks".to_string(),
                 meta::agent_test_tasks_json(&[
@@ -122,16 +123,12 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                         "I have the text 'hello, world'. Compress it with gzip and then \
                          decompress it back to recover the original text. Return a single row \
                          with one column named text.",
-                        "SELECT compress.main.decompress(compress.main.compress('hello, \
-                         world'::BLOB, 'gzip'), 'gzip')::VARCHAR AS text",
                     ),
                     (
                         "identify_codec",
                         "Some bytes were produced by compressing the text 'payload' with zstd. \
                          Without being told which codec was used, identify it from the bytes \
                          themselves. Return a single row with one column named codec.",
-                        "SELECT compress.main.detect_codec(compress.main.compress('payload'::BLOB, \
-                         'zstd')) AS codec",
                     ),
                     (
                         "auto_decompress",
@@ -139,8 +136,6 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                          gzip, but the sender did not say which codec they used. Recover the \
                          original text automatically, without naming a codec. Return a single \
                          row with one column named text.",
-                        "SELECT compress.main.decompress_auto(compress.main.compress('streaming \
-                         data'::BLOB, 'gzip'))::VARCHAR AS text",
                     ),
                     (
                         "compressed_size_zstd",
@@ -148,16 +143,12 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                          dog' occupy after being compressed with zstd at level 19? Do not return \
                          the compressed bytes, just the size. Return a single row with one column \
                          named bytes.",
-                        "SELECT compress.main.compressed_size('the quick brown fox jumps over \
-                         the lazy dog'::BLOB, 'zstd', 19) AS bytes",
                     ),
                     (
                         "decompressed_size",
                         "A gzip blob was produced from the text 'the quick brown fox jumps over \
                          the lazy dog'. Without printing the text, how many bytes does that blob \
                          decompress to? Return a single row with one column named bytes.",
-                        "SELECT compress.main.decompressed_size(compress.main.compress('the quick \
-                         brown fox jumps over the lazy dog'::BLOB, 'gzip'), 'gzip') AS bytes",
                     ),
                     (
                         "ratio_zstd",
@@ -165,21 +156,16 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                          compressed-over-original size ratio under zstd at level 19 (a value \
                          below 1.0 means it shrank)? Return a single row with one column named \
                          ratio.",
-                        "SELECT compress.main.ratio('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\
-                         '::BLOB, 'zstd', 19) AS ratio",
                     ),
                     (
                         "validate_gzip",
                         "Check whether a gzip-compressed blob of the text 'hi' is a well-formed \
                          gzip stream. Return a single row with one column named ok.",
-                        "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), \
-                         'gzip') AS ok",
                     ),
                     (
                         "supports_zstd",
                         "Does this build support the zstd codec? Return a single row with one \
                          column named has_zstd.",
-                        "SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd",
                     ),
                 ]),
             ),
@@ -187,6 +173,7 @@ fn catalog_metadata(name: &str) -> CatalogModel {
         source_url: Some("https://github.com/Query-farm/vgi-compress".to_string()),
         schemas: vec![CatSchema {
             name: "main".to_string(),
+            path: Vec::new(),
             comment: Some(
                 "Multi-codec compress / decompress / detect / introspect functions over a `BLOB`."
                     .to_string(),

@@ -12,8 +12,8 @@ block), `snappy` (framed + raw), `xz`, `lzma`, `bzip2` — plus codec
 auto-detection by magic bytes, level control, and size/ratio introspection.
 Functions live under catalog `compress`, schema `main`.
 
-Built on the published VGI Rust SDK (`vgi = "0.17.0"`, `vgi-rpc = "0.11.0"` from
-crates.io), arrow 59.
+Built on the published VGI Rust SDK (`vgi = "0.46"`, `vgi-rpc = "0.32"` from
+crates.io), arrow 60.
 Modeled on `../vgi-cbor` (the MIT BLOB-transform reference) and
 `../vgi-fixedformat`. The repo builds standalone — no local SDK checkout, no
 `path` dependency on the SDK.

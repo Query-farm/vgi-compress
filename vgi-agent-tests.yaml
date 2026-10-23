@@ -1,0 +1,24 @@
+# Private graders for the agent-suitability suite (`vgi-lint simulate`).
+#
+# The prompts are published in the catalog's vgi.agent_test_tasks tag
+# (crates/compress-worker/src/lib.rs); the answers live here, keyed by task name, so the
+# agent being graded never sees them. vgi-lint discovers this file in the
+# directory it runs from (the repo root in CI).
+
+tasks:
+  - name: "roundtrip_gzip"
+    reference_sql: "SELECT compress.main.decompress(compress.main.compress('hello, world'::BLOB, 'gzip'), 'gzip')::VARCHAR AS text"
+  - name: "identify_codec"
+    reference_sql: "SELECT compress.main.detect_codec(compress.main.compress('payload'::BLOB, 'zstd')) AS codec"
+  - name: "auto_decompress"
+    reference_sql: "SELECT compress.main.decompress_auto(compress.main.compress('streaming data'::BLOB, 'gzip'))::VARCHAR AS text"
+  - name: "compressed_size_zstd"
+    reference_sql: "SELECT compress.main.compressed_size('the quick brown fox jumps over the lazy dog'::BLOB, 'zstd', 19) AS bytes"
+  - name: "decompressed_size"
+    reference_sql: "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox jumps over the lazy dog'::BLOB, 'gzip'), 'gzip') AS bytes"
+  - name: "ratio_zstd"
+    reference_sql: "SELECT compress.main.ratio('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'::BLOB, 'zstd', 19) AS ratio"
+  - name: "validate_gzip"
+    reference_sql: "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip') AS ok"
+  - name: "supports_zstd"
+    reference_sql: "SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd"
