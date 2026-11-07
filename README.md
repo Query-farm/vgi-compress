@@ -19,7 +19,7 @@ functions like any other. Pure in-engine scalar compute over a `BLOB` column —
 ```sql
 INSTALL vgi FROM community;
 LOAD vgi;
-ATTACH 'compress' (TYPE vgi, LOCATION './target/release/compress-worker');
+ATTACH 'compress' (TYPE vgi, LOCATION 'github-auto://Query-farm/vgi-compress@v0.2.0');
 SET search_path = 'compress.main';
 
 -- 1. Decompress a column of gzip'd HTTP bodies in a log table.
@@ -45,6 +45,39 @@ SELECT compressed_size(blob, 'zstd', 19)   AS bytes_out,
        compress(blob, 'zstd', 19)          AS packed
 FROM (SELECT string_agg(line, '\n')::BLOB AS blob FROM report_lines);
 ```
+
+## Quick start
+
+Every [GitHub release](https://github.com/Query-farm/vgi-compress/releases) ships a prebuilt worker binary. The `vgi` extension downloads the one for your platform, checks its SHA-256 and caches it, so there is nothing to install besides DuckDB:
+
+```sql
+INSTALL vgi FROM community;
+LOAD vgi;
+
+ATTACH 'compress' AS compress (TYPE vgi, LOCATION 'github-auto://Query-farm/vgi-compress@v0.2.0');
+
+-- Decode a gzip'd HTTP body column to text at scan time.
+SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR AS body FROM http_logs;
+
+-- Identify the codec of each message in a mixed-codec column.
+SELECT id, compress.main.detect_codec(value) AS codec FROM kafka_messages;
+```
+
+Prebuilt binaries cover macOS (Apple silicon), Linux (x86-64 and arm64). `github-auto://` needs an explicit release tag; change `@v0.2.0` to move to a newer release.
+
+### Other ways to run it
+
+- **Docker** (the image bundles the worker; needs a container runtime):
+
+  ```sql
+  ATTACH 'compress' AS compress (TYPE vgi, LOCATION 'docker://ghcr.io/query-farm/vgi-compress:0.2.0');
+  ```
+
+- **Manual download.** Download the archive for your platform from the [releases page](https://github.com/Query-farm/vgi-compress/releases), verify it against its `.sha256` file (a cosign `.cosign.bundle` is published alongside), unpack it, and set `LOCATION` to the path of the extracted worker executable.
+
+### Build from source
+
+To build the worker yourself, see [Build & test](#build--test).
 
 ## Security — decompression bombs
 
