@@ -182,7 +182,7 @@ cargo test --workspace --all-features           # unit + golden vectors + propte
 ```
 
 The repository builds standalone against the published VGI Rust SDK
-(`vgi = "0.49.2"` from crates.io, VGI protocol 3.1 / haybarn 2.0) and arrow 59 — no local SDK checkout, no `path`
+(`vgi = "0.50.0"` from crates.io, VGI protocol 3.2 / haybarn 2.0) and arrow 59 — no local SDK checkout, no `path`
 dependency on the SDK. See [`ci/README.md`](ci/README.md) for the transport
 matrix (subprocess / unix / http) the E2E suite runs across.
 
