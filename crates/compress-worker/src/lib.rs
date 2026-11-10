@@ -50,7 +50,13 @@ fn catalog_metadata(name: &str) -> CatalogModel {
         tags: vec![
             (
                 "vgi.title".to_string(),
-                "Multi-Codec Compression Codec".to_string(),
+                "Multi-Codec Compression".to_string(),
+            ),
+            (
+                "vgi.subtitle".to_string(),
+                "Compress, decompress, and identify zstd, gzip, brotli, lz4, snappy, xz, and bzip2 \
+                 payloads stored in BLOB columns."
+                    .to_string(),
             ),
             (
                 "vgi.keywords".to_string(),
@@ -179,7 +185,7 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                     .to_string(),
             ),
             tags: vec![
-                ("vgi.title".to_string(), "Compress — main".to_string()),
+                ("vgi.title".to_string(), "Compression Functions".to_string()),
                 (
                     "vgi.keywords".to_string(),
                     meta::keywords_json(

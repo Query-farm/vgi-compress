@@ -24,9 +24,11 @@ compress-core.workspace = true
 log = "0.4"
 
 # --- Native ---------------------------------------------------------------
-# The SDK's real default features — unchanged from before the wasm split.
+# HTTP transport only. The SDK's `sqlite` feature (bundled libsqlite3-sys) backs
+# the buffering-function state store, which this pure-scalar worker never uses;
+# without it the SDK falls back to its fs store and no C SQLite is linked.
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
-vgi = { workspace = true, features = ["sqlite", "transport-http"] }
+vgi = { workspace = true, features = ["transport-http"] }
 vgi-rpc = { workspace = true, features = ["http"] }
 env_logger = "0.11"
 
