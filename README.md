@@ -19,7 +19,7 @@ functions like any other. Pure in-engine scalar compute over a `BLOB` column —
 ```sql
 INSTALL vgi FROM community;
 LOAD vgi;
-ATTACH 'compress' (TYPE vgi, LOCATION 'github-auto://Query-farm/vgi-compress@v0.3.0');
+ATTACH 'compress' (TYPE vgi, LOCATION 'github-auto://Query-farm/vgi-compress@v0.4.0');
 SET search_path = 'compress.main';
 
 -- 1. Decompress a column of gzip'd HTTP bodies in a log table.
@@ -54,7 +54,7 @@ Every [GitHub release](https://github.com/Query-farm/vgi-compress/releases) ship
 INSTALL vgi FROM community;
 LOAD vgi;
 
-ATTACH 'compress' AS compress (TYPE vgi, LOCATION 'github-auto://Query-farm/vgi-compress@v0.3.0');
+ATTACH 'compress' AS compress (TYPE vgi, LOCATION 'github-auto://Query-farm/vgi-compress@v0.4.0');
 
 -- Decode a gzip'd HTTP body column to text at scan time.
 SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR AS body FROM http_logs;
@@ -63,14 +63,14 @@ SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR AS body FROM http_logs
 SELECT id, compress.main.detect_codec(value) AS codec FROM kafka_messages;
 ```
 
-Prebuilt binaries cover macOS (Apple silicon), Linux (x86-64 and arm64). `github-auto://` needs an explicit release tag; change `@v0.3.0` to move to a newer release.
+Prebuilt binaries cover macOS (Apple silicon), Linux (x86-64 and arm64). `github-auto://` needs an explicit release tag; change `@v0.4.0` to move to a newer release.
 
 ### Other ways to run it
 
 - **Docker** (the image bundles the worker; needs a container runtime):
 
   ```sql
-  ATTACH 'compress' AS compress (TYPE vgi, LOCATION 'docker://ghcr.io/query-farm/vgi-compress:0.3.0');
+  ATTACH 'compress' AS compress (TYPE vgi, LOCATION 'docker://ghcr.io/query-farm/vgi-compress:0.4.0');
   ```
 
 - **Manual download.** Download the archive for your platform from the [releases page](https://github.com/Query-farm/vgi-compress/releases), verify it against its `.sha256` file (a cosign `.cosign.bundle` is published alongside), unpack it, and set `LOCATION` to the path of the extracted worker executable.
@@ -182,7 +182,7 @@ cargo test --workspace --all-features           # unit + golden vectors + propte
 ```
 
 The repository builds standalone against the published VGI Rust SDK
-(`vgi = "0.50.0"` from crates.io, VGI protocol 3.2 / haybarn 2.0) and arrow 59 — no local SDK checkout, no `path`
+(`vgi = "0.51.0"` from crates.io, VGI protocol 3.3 / haybarn 2.0) and arrow 59 — no local SDK checkout, no `path`
 dependency on the SDK. See [`ci/README.md`](ci/README.md) for the transport
 matrix (subprocess / unix / http) the E2E suite runs across.
 
