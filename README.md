@@ -186,6 +186,10 @@ worker).
 
 ## Build & test
 
+See the [executed Python notebooks](notebooks/README.md) for a SQL walkthrough of
+batch boundaries, compressed size and exact bounded decoding, with charts and a
+parameter experiment using a published worker release.
+
 ```bash
 cargo build --release --bin compress-worker     # the worker binary
 cargo test --workspace --all-features           # unit + golden vectors + proptest zero-panic gate
