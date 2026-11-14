@@ -25,8 +25,8 @@ impl ScalarFunction for Codecs {
         let mut tags = crate::meta::object_tags(
             "Supported Codecs",
             "Return the list of codec names this build supports, so SQL can discover the surface \
-             without a docs lookup. Reflects compiled-in features (e.g. which xz backend, or a \
-             codec opt-out). Use the returned names as the codec argument to compress / \
+             without a docs lookup. Every build lists the same twelve names (the xz backend \
+             choice changes how xz compresses, not which codecs exist). Use the returned names as the codec argument to compress / \
              decompress / compressed_size / ratio / is_valid.",
             "List the codec names this build supports, e.g. `codecs()` → ['zstd','gzip',…]. \
              Returns `LIST(VARCHAR)`.",
@@ -41,6 +41,7 @@ impl ScalarFunction for Codecs {
                 "Check whether this build supports zstd.",
                 "SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd",
             ),
+            crate::examples::CODEC_BENCHMARK,
         ];
         tags.push((
             "vgi.example_queries".into(),
@@ -48,7 +49,7 @@ impl ScalarFunction for Codecs {
         ));
         tags.push(("vgi.category".into(), "discovery".into()));
         FunctionMetadata {
-            description: "List the codec names this build supports (reflects feature flags)".into(),
+            description: "List the codec names this build supports".into(),
             return_type: Some(list_varchar()),
             examples: crate::meta::function_examples(examples),
             tags,

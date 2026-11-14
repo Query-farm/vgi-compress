@@ -48,8 +48,8 @@ pub enum Codec {
     Bzip2,
 }
 
-/// Every codec this build supports, in a stable, documented order. Reflects
-/// compiled-in features (the xz backend label is reported by [`xz_backend`]).
+/// Every codec this build supports, in a stable, documented order. The list is
+/// the same in every build (the xz backend label is reported by [`xz_backend`]).
 pub const ALL: &[Codec] = &[
     Codec::Zstd,
     Codec::Gzip,
@@ -66,8 +66,8 @@ pub const ALL: &[Codec] = &[
 ];
 
 /// Which xz/lzma backend is compiled in: `"liblzma"` (the C `xz-utils` FFI,
-/// `--features liblzma`) or `"lzma-rs"` (the pure-Rust default). Surfaced by the
-/// worker's `codecs()` so SQL can discover the build.
+/// `--features liblzma`) or `"lzma-rs"` (the pure-Rust default). Not surfaced in
+/// SQL: the worker's `codecs()` lists codec names only.
 pub fn xz_backend() -> &'static str {
     if cfg!(feature = "liblzma") {
         "liblzma"

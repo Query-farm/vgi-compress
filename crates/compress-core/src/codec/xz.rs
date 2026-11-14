@@ -2,8 +2,8 @@
 //!
 //! Default backend: pure-Rust `lzma-rs` (MIT, no C, smaller trust surface).
 //! With `--features liblzma`, xz routes to the C `xz-utils` `liblzma` FFI for
-//! throughput; the legacy `.lzma` form always uses `lzma-rs`. `codecs()` reports
-//! which backend is compiled in.
+//! throughput; the legacy `.lzma` form always uses `lzma-rs`. [`crate::xz_backend`]
+//! reports which backend is compiled in (SQL `codecs()` lists names only).
 //!
 //! NOTE: the pure-Rust `lzma-rs` backend does not expose a compression-level
 //! knob, so `level` is accepted and clamped but is a no-op there; the stream is

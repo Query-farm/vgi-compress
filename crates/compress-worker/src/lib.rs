@@ -28,6 +28,7 @@
 
 pub mod arrow_io;
 pub mod config;
+pub mod examples;
 pub mod meta;
 pub mod scalar;
 
@@ -173,6 +174,23 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                         "Does this build support the zstd codec? Return a single row with one \
                          column named has_zstd.",
                     ),
+                    (
+                        "undetectable_codecs",
+                        "Which of the codecs this build supports produce output that cannot be \
+                         identified from its own bytes (magic-byte detection reports it as \
+                         unknown)? Test by compressing the text 'vgi' with every supported codec. \
+                         Return one row per such codec with a single VARCHAR column named codec, \
+                         sorted alphabetically.",
+                    ),
+                    (
+                        "smallest_self_describing_codec",
+                        "I want to send the text 'the quick brown fox jumps over the lazy dog ' \
+                         (with the trailing space) repeated 20 times, using a codec the receiver \
+                         can identify from the bytes alone. Among the supported codecs whose \
+                         compressed output is recognised by magic-byte detection, which one gives \
+                         the smallest output at its default level? Return a single row with two \
+                         columns: codec (VARCHAR) and bytes (the compressed size as a BIGINT).",
+                    ),
                 ]),
             ),
         ],
@@ -246,32 +264,7 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                 ),
                 (
                     "vgi.example_queries".to_string(),
-                    meta::example_queries_json(&[
-                        (
-                            "Decode a gzip'd HTTP body column to text at scan time.",
-                            "SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR AS body \
-                             FROM http_logs",
-                        ),
-                        (
-                            "Identify the codec of each message in a mixed-codec column.",
-                            "SELECT id, compress.main.detect_codec(value) AS codec \
-                             FROM kafka_messages",
-                        ),
-                        (
-                            "Auto-detect and decode a mixed-codec column with a 64 MiB/row cap.",
-                            "SELECT compress.main.decompress_auto(value, 67108864) AS payload \
-                             FROM kafka_messages",
-                        ),
-                        (
-                            "Audit the zstd-19 compression ratio of a blob column.",
-                            "SELECT avg(compress.main.ratio(blob, 'zstd', 19)) AS avg_ratio \
-                             FROM report",
-                        ),
-                        (
-                            "List every codec this build supports.",
-                            "SELECT compress.main.codecs() AS codecs",
-                        ),
-                    ]),
+                    meta::example_queries_json(&schema_examples()),
                 ),
             ],
             views: Vec::new(),
@@ -280,6 +273,39 @@ fn catalog_metadata(name: &str) -> CatalogModel {
         }],
         ..Default::default()
     }
+}
+
+/// The schema-level `vgi.example_queries` list: the single-function examples
+/// first, then every composed multi-function example from [`examples::ALL`].
+fn schema_examples() -> Vec<(&'static str, &'static str)> {
+    let mut list: Vec<(&'static str, &'static str)> = vec![
+        (
+            "Decode a gzip'd HTTP body column to text at scan time.",
+            "SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR AS body \
+                             FROM http_logs",
+        ),
+        (
+            "Identify the codec of each message in a mixed-codec column.",
+            "SELECT id, compress.main.detect_codec(value) AS codec \
+                             FROM kafka_messages",
+        ),
+        (
+            "Auto-detect and decode a mixed-codec column with a 64 MiB/row cap.",
+            "SELECT compress.main.decompress_auto(value, 67108864) AS payload \
+                             FROM kafka_messages",
+        ),
+        (
+            "Audit the zstd-19 compression ratio of a blob column.",
+            "SELECT avg(compress.main.ratio(blob, 'zstd', 19)) AS avg_ratio \
+                             FROM report",
+        ),
+        (
+            "List every codec this build supports.",
+            "SELECT compress.main.codecs() AS codecs",
+        ),
+    ];
+    list.extend_from_slice(examples::ALL);
+    list
 }
 
 /// The catalog name DuckDB sees in `ATTACH 'compress' (TYPE vgi, …)`. Defaults

@@ -30,8 +30,8 @@ proptest = "1"
 default = []
 # Optional C `liblzma` (xz-utils) backend for xz/lzma — faster/more battle-tested
 # but pulls a C dependency and the xz-utils supply-chain history (CVE-2024-3094).
-# Off by default; the pure-Rust `lzma-rs` backend ships by default. `codecs()`
-# reflects which xz backend is compiled in.
+# Off by default; the pure-Rust `lzma-rs` backend ships by default. The active
+# backend is reported by `compress_core::xz_backend()` (not by SQL `codecs()`).
 liblzma = ["dep:liblzma"]
 
 [dependencies.liblzma]

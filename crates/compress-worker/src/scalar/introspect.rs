@@ -354,14 +354,28 @@ impl ScalarFunction for IsValid {
              Never throws — bad input is FALSE. Returns `BOOLEAN`.",
             "is_valid, valid, well formed, check, verify, trial decode, codec, blob, total",
         );
-        let examples: &[(&str, &str)] = &[(
-            "Check whether a blob is a well-formed gzip stream.",
-            "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip') \
-             AS ok",
-        )];
+        let examples: &[(&str, &str)] = &[
+            (
+                "Check whether a blob is a well-formed gzip stream.",
+                "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip') \
+                 AS ok",
+            ),
+            crate::examples::HEADERLESS_TRIAGE,
+        ];
         tags.push((
             "vgi.example_queries".into(),
             crate::meta::example_queries_json(examples),
+        ));
+        // VGI509: the composed triage query is offline and deterministic, so it
+        // also ships as a guaranteed-runnable, output-verified example.
+        let (triage_desc, triage_sql) = crate::examples::HEADERLESS_TRIAGE;
+        tags.push((
+            "vgi.executable_examples".into(),
+            crate::meta::executable_examples_json(&[(
+                triage_desc,
+                triage_sql,
+                crate::examples::HEADERLESS_TRIAGE_EXPECTED,
+            )]),
         ));
         tags.push(("vgi.category".into(), "introspection".into()));
         FunctionMetadata {

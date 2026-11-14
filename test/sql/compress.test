@@ -131,6 +131,23 @@ SELECT decompress(NULL::BLOB, 'gzip') IS NULL;
 ----
 true
 
+# --- Composed examples (published in vgi.example_queries) --------------
+
+# detect_codec feeding decompressed_size: profile a mixed-codec column.
+query TIII
+WITH inbox AS (SELECT id, compress.main.compress(repeat(body, 20)::BLOB, codec) AS payload FROM (VALUES (1, 'zstd', 'temp=21.5;'), (2, 'gzip', 'temp=22.0;'), (3, 'zstd', 'temp=20.9;'), (4, 'bzip2', 'temp=23.1;'), (5, 'brotli', 'temp=19.8;')) AS t(id, codec, body)), sniffed AS (SELECT payload, compress.main.detect_codec(payload) AS codec FROM inbox) SELECT codec, count(*) AS messages, sum(octet_length(payload)) AS stored_bytes, sum(compress.main.decompressed_size(payload, codec)) AS raw_bytes FROM sniffed WHERE codec <> 'unknown' GROUP BY codec ORDER BY codec;
+----
+bzip2	1	60	200
+gzip	1	47	200
+zstd	2	52	400
+
+# detect_codec + is_valid across codecs(): triage headerless payloads.
+query IT
+WITH uploads AS (SELECT id, compress.main.compress(body::BLOB, codec) AS payload FROM (VALUES (1, '{"status":"ok","items":[1,2,3]}', 'brotli'), (2, '{"status":"ok","items":[4,5,6]}', 'deflate'), (3, '{"status":"ok","items":[7,8,9]}', 'gzip')) AS t(id, body, codec)) SELECT id, codec FROM uploads, unnest(compress.main.codecs()) AS t(codec) WHERE compress.main.detect_codec(payload) = 'unknown' AND compress.main.is_valid(payload, codec) ORDER BY id, codec;
+----
+1	brotli
+2	deflate
+
 statement ok
 USE memory;
 

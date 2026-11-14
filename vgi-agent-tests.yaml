@@ -22,3 +22,7 @@ tasks:
     reference_sql: "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip') AS ok"
   - name: "supports_zstd"
     reference_sql: "SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd"
+  - name: "undetectable_codecs"
+    reference_sql: "SELECT codec FROM unnest(compress.main.codecs()) AS t(codec) WHERE compress.main.detect_codec(compress.main.compress('vgi'::BLOB, codec)) = 'unknown' ORDER BY codec"
+  - name: "smallest_self_describing_codec"
+    reference_sql: "SELECT codec, compress.main.compressed_size(repeat('the quick brown fox jumps over the lazy dog ', 20)::BLOB, codec)::BIGINT AS bytes FROM unnest(compress.main.codecs()) AS t(codec) WHERE compress.main.detect_codec(compress.main.compress(repeat('the quick brown fox jumps over the lazy dog ', 20)::BLOB, codec)) <> 'unknown' ORDER BY bytes, codec LIMIT 1"

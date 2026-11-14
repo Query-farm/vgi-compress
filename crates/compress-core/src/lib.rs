@@ -40,8 +40,9 @@ pub fn version() -> &'static str {
     env!("CARGO_PKG_VERSION")
 }
 
-/// The codec names this build supports, in stable order. Reflects compiled-in
-/// features; the active xz backend is reported separately by [`xz_backend`].
+/// The codec names this build supports, in stable order. The list is the same
+/// in every build; the active xz backend is reported separately by
+/// [`xz_backend`].
 pub fn codecs() -> Vec<&'static str> {
     codec::ALL.iter().map(|c| c.name()).collect()
 }

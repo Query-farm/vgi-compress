@@ -180,6 +180,7 @@ impl ScalarFunction for Decompress {
                 "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), \
                  'gzip', 67108864) AS body",
             ),
+            crate::examples::TRANSCODE_AUDIT,
         ];
         let mut tags = crate::meta::object_tags(
             "Decompress a BLOB",

@@ -262,3 +262,32 @@ fn truncated_stream_is_not_too_large() {
         other => panic!("expected Corrupt for a truncated xz stream, got {other:?}"),
     }
 }
+
+#[test]
+fn codecs_list_is_fixed_and_backend_reported_separately() {
+    // `codecs()` (and so SQL `codecs()`) lists the same twelve names in every
+    // build; the xz backend choice is reported only by `xz_backend()`.
+    assert_eq!(
+        compress_core::codecs(),
+        vec![
+            "zstd",
+            "gzip",
+            "zlib",
+            "deflate",
+            "brotli",
+            "lz4",
+            "lz4_block",
+            "snappy",
+            "snappy_raw",
+            "xz",
+            "lzma",
+            "bzip2"
+        ]
+    );
+    let expected_backend = if cfg!(feature = "liblzma") {
+        "liblzma"
+    } else {
+        "lzma-rs"
+    };
+    assert_eq!(compress_core::xz_backend(), expected_backend);
+}

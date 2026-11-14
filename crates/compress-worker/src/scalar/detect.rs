@@ -29,11 +29,14 @@ impl ScalarFunction for DetectCodec {
             "detect_codec, sniff, magic bytes, identify codec, gzip, zstd, xz, bzip2, lz4, \
              snappy, auto-detect, unknown",
         );
-        let examples: &[(&str, &str)] = &[(
-            "Identify the codec of a compressed blob from its magic bytes.",
-            "SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB, 'zstd')) \
-             AS codec",
-        )];
+        let examples: &[(&str, &str)] = &[
+            (
+                "Identify the codec of a compressed blob from its magic bytes.",
+                "SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB, 'zstd')) \
+                 AS codec",
+            ),
+            crate::examples::MIXED_CODEC_PROFILE,
+        ];
         tags.push((
             "vgi.example_queries".into(),
             crate::meta::example_queries_json(examples),

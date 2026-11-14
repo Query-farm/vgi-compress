@@ -26,6 +26,24 @@ pub fn example_queries_json(examples: &[(&str, &str)]) -> String {
     format!("[{}]", items.join(","))
 }
 
+/// Build a `vgi.executable_examples` JSON tag from `(description, sql,
+/// expected_result)` triples, where `expected_result` is already a JSON array of
+/// row objects (VGI509: guaranteed-runnable, output-verified examples).
+pub fn executable_examples_json(examples: &[(&str, &str, &str)]) -> String {
+    let items: Vec<String> = examples
+        .iter()
+        .map(|(description, sql, expected)| {
+            format!(
+                "{{\"description\":\"{}\",\"sql\":\"{}\",\"expected_result\":{}}}",
+                json_escape(description),
+                json_escape(sql),
+                expected
+            )
+        })
+        .collect();
+    format!("[{}]", items.join(","))
+}
+
 /// Build the native `FunctionMetadata.examples` vector from the SAME
 /// `(description, sql)` pairs used for [`example_queries_json`]. The native
 /// `duckdb_functions().examples` carrier drops descriptions, so keeping the two

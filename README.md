@@ -61,6 +61,16 @@ SELECT compress.main.decompress(body_gz, 'gzip')::VARCHAR AS body FROM http_logs
 
 -- Identify the codec of each message in a mixed-codec column.
 SELECT id, compress.main.detect_codec(value) AS codec FROM kafka_messages;
+
+-- Pick a codec: rank every supported codec by size and ratio on a sample payload.
+SELECT codec,
+       compress.main.compressed_size(p, codec)     AS bytes_out,
+       round(compress.main.ratio(p, codec), 3)     AS ratio
+FROM (SELECT repeat('{"user":42,"event":"click","page":"/home"}' || chr(10), 200)::BLOB AS p),
+     unnest(compress.main.codecs()) AS t(codec)
+ORDER BY bytes_out, codec;
+-- brotli (57 B) and zstd (61 B) come out smallest; the default pure-Rust xz/lzma
+-- encoder ranks last (see "xz / lzma backend" below).
 ```
 
 Prebuilt binaries cover macOS (Apple silicon), Linux (x86-64 and arm64). `github-auto://` needs an explicit release tag; change `@v0.4.0` to move to a newer release.
@@ -159,7 +169,8 @@ chance `78 xx` in arbitrary bytes is rejected rather than mis-reported.
 The default xz/lzma backend is the **pure-Rust `lzma-rs`** (MIT, no C, smaller
 trust surface). An optional `--features liblzma` routes xz through the C
 `xz-utils` `liblzma` FFI for throughput (operators who vet their C toolchain);
-`codecs()` reflects the build. Note that the pure-Rust `lzma-rs` *encoder* is a
+`codecs()` lists the same codec names either way (it does not report the
+backend). Note that the pure-Rust `lzma-rs` *encoder* is a
 basic implementation: it produces fully valid, round-trippable xz/lzma streams
 but compresses poorly. Decode is always correct and bomb-guarded. Use
 `--features liblzma`, or a strong codec like `zstd`/`bzip2`, when xz *ratio* or
