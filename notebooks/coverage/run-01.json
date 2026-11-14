@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+  "catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+  "worker_revision": "v0.4.0",
+  "status": "success",
+  "executed_at": "2026-11-14T18:51:15.265337+00:00",
+  "engine": "Haybarn 2.0.0rc11 / VGI e75482339d",
+  "command": "uv run --locked --extra runner vgi-notebooks",
+  "catalog_aliases": [
+    "compress"
+  ],
+  "cells": [
+    {
+      "id": "compress-02",
+      "status": "success",
+      "execution_count": 1,
+      "source_sha256": "297847fde3abad13da71e6b3036a46dea9594df1a7f9c493195a5eb5da8a74a1",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "compress-03",
+      "status": "success",
+      "execution_count": 2,
+      "source_sha256": "dadb4d0b253c7510cc9a9835684f99984873dcf4ace79e6aeec701cc17f90347",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "compress-04",
+      "status": "success",
+      "execution_count": 3,
+      "source_sha256": "9cbd30527e2ccef956e64a41a23e2a491f7445334dbc8977975e7327090b65eb",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "compress-06",
+      "status": "success",
+      "execution_count": 4,
+      "source_sha256": "2f0f336cda1a3e7797d5c33084dc55d0c9de61ad53b4d6909085ae68d4f5ef16",
+      "outputs_sha256": "9c235268b9ead995c2615e590dded0db2428bed90f0e1dce79304f517c7f36fa"
+    },
+    {
+      "id": "codec-capabilities",
+      "status": "success",
+      "execution_count": 5,
+      "source_sha256": "0a62d16c76cfbaec89743ae243bee73971327f9a70051e2828c74764ef8bba9a",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "codec-choice",
+      "status": "success",
+      "execution_count": 6,
+      "source_sha256": "aae7f968a406e83e979b75ee16fef1c1a86152450109ac1ce75d58f2ecee041b",
+      "outputs_sha256": "f4c59b2f25124646dd6b31f8093bec10de362027487c1b01e55abbf553799ef7"
+    },
+    {
+      "id": "compress-08",
+      "status": "success",
+      "execution_count": 7,
+      "source_sha256": "729c787292208ad03ac5fed74fc74eae960172dbc97929d7db2cc82a3f36d463",
+      "outputs_sha256": "8d7518b27904885b9a887af1effd6c2c80d75e232ccd0baae5944861b6c6b979"
+    },
+    {
+      "id": "capture-inputs",
+      "status": "success",
+      "execution_count": 8,
+      "source_sha256": "d525140995968535b832d5d43c5f741faf58de31b2d75fc6515a3d051c475594",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "compress-09",
+      "status": "success",
+      "execution_count": 9,
+      "source_sha256": "0bf3c59ea64a35f3ef823460a1bc385b084191582243624071a8f9c3f1f1f042",
+      "outputs_sha256": "2598a0482855509d4a080acac8f8f130e344717f960f60bb19451e79a68e02bb"
+    },
+    {
+      "id": "compress-11",
+      "status": "success",
+      "execution_count": 10,
+      "source_sha256": "c14efa923e0b44eb3efdff134ac09ee23b96e5197d07574226047f5c75e0ec5c",
+      "outputs_sha256": "81bcd48a91c144a66957e1bdd4d9129e6483a2fbc089a7e8d75a9278eddb832f"
+    },
+    {
+      "id": "compress-13",
+      "status": "success",
+      "execution_count": 11,
+      "source_sha256": "f1faabf8573b836485b30ca2daf5a590c0af7df2ee34c80b63ac998cc493ce32",
+      "outputs_sha256": "b9a60079cc33ba4083adfb55296c209ca724dbcb3d826bc74be02c68f2ba9135"
+    },
+    {
+      "id": "capture-checks",
+      "status": "success",
+      "execution_count": 12,
+      "source_sha256": "e221215a6d41775e4e31d7a3f2dbd9f84623e4fa7fba186f69c5527d78a4d9f3",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "compress-14",
+      "status": "success",
+      "execution_count": 13,
+      "source_sha256": "e03d4f421115e88acd3e2015a22655675f22a52d3767aac63548f5414866600d",
+      "outputs_sha256": "b807288f1693deb0b6dac8270862cd95c0becad6be85199827d3104f376ea368"
+    },
+    {
+      "id": "compress-15",
+      "status": "success",
+      "execution_count": 14,
+      "source_sha256": "30d9367e8baafe29add64c04f93920d64ad944c65f0713c633a3bb2a07c90239",
+      "outputs_sha256": "725fc64260420b56da629927cce76155ad53891b080727060838cb486ed93c74"
+    },
+    {
+      "id": "capture-sizes",
+      "status": "success",
+      "execution_count": 15,
+      "source_sha256": "115e849b5836912ec4afefe2afd25fcbc477e2effda42be5af02451dd24e57b5",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "compress-17",
+      "status": "success",
+      "execution_count": 16,
+      "source_sha256": "bfdaa30d3ba98db01dab541cb43c95aee3bbe8c76daa02fbae2f26a5aa1e7eea",
+      "outputs_sha256": "60d6230e441e8adda5e970f3b8ca26b40e29c4a0022e3df74fec3d16078d850d"
+    },
+    {
+      "id": "compress-19",
+      "status": "success",
+      "execution_count": 17,
+      "source_sha256": "c021bb2f26443eedc5a44b6d828d34cb4f1d74d6500b3fbd83dfdf4ffd2f42d6",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "compress-20",
+      "status": "success",
+      "execution_count": 18,
+      "source_sha256": "96da8340aaad5586a21c199c17a9f14a5317998d032159d6ffda3cdfc2503ee8",
+      "outputs_sha256": "db6e5c5a6dd862e2d88b252fa09c5a7e799b2d99ea8ba36a6f964fcb0d62209b"
+    },
+    {
+      "id": "compress-21",
+      "status": "success",
+      "execution_count": 19,
+      "source_sha256": "4bec77703a681774017ab1c735b03e3a2d6b1a4a1265c74545732c3e2fe82791",
+      "outputs_sha256": "ff5ce030ff4b72d7e8cc631c47d635bf976ae23dcf3d98c858911568aba913cc"
+    },
+    {
+      "id": "capacity-sql",
+      "status": "success",
+      "execution_count": 20,
+      "source_sha256": "f15db92a01e92ddfe6ee22c0465ee9d49b13c1670eba558b94c4855040b7c97e",
+      "outputs_sha256": "1ce4b9bd82ee4a384dde6267524bc877d12722ca74227482ef5244df1e540dd7"
+    },
+    {
+      "id": "capture-capacity",
+      "status": "success",
+      "execution_count": 21,
+      "source_sha256": "dbd7a9df806366dab38c0460c0e1b353b0ae2452786592546188eb3dc75d4b9c",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "capacity-result",
+      "status": "success",
+      "execution_count": 22,
+      "source_sha256": "c916e1ac17acd45cac69adaa070c88718c7fd208f4e94ff5bc06184545fbd346",
+      "outputs_sha256": "3f43eab6f961f58254bcb0c33ba40231802b0b0b5f1707ea85c359e06ab482da"
+    },
+    {
+      "id": "compress-23",
+      "status": "success",
+      "execution_count": 23,
+      "source_sha256": "201457d57f8f5a505b07c8363840789a2be013e3370117f902be003392a47ac7",
+      "outputs_sha256": "3eb7d8c5f495607be8abc27b3708c05d9dbdfa26b568e2dd2df6b5ed0d5b71ee"
+    },
+    {
+      "id": "capture-controls",
+      "status": "success",
+      "execution_count": 24,
+      "source_sha256": "9b0e34f7fb9c3b8ae9640b7b90164b8bd7624dfa3ee3283ad7812f1d1537e023",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    },
+    {
+      "id": "control-results",
+      "status": "success",
+      "execution_count": 25,
+      "source_sha256": "b043bbdd8d4a37f4a9ed4e515a1238ce4bd46a2f0a5fab31215a9b54cd0a2ec4",
+      "outputs_sha256": "866a03a5e457e70cefc93526e32c755474906a1881b271e499855d2191994321"
+    },
+    {
+      "id": "compress-25",
+      "status": "success",
+      "execution_count": 26,
+      "source_sha256": "253dd6f37aa50e657f869d6ba37c2ec4a5b80fcdcb8f313c72b297ad1565dd86",
+      "outputs_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+    }
+  ]
+}

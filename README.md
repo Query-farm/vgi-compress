@@ -187,8 +187,8 @@ worker).
 ## Build & test
 
 See the [executed Python notebooks](notebooks/README.md) for a SQL walkthrough of
-batch boundaries, compressed size and exact bounded decoding, with charts and a
-parameter experiment using a published worker release.
+batch boundaries, capacity estimates, format detection and exact bounded decoding,
+covering all nine SQL functions with charts and a published-release parameter experiment.
 
 ```bash
 cargo build --release --bin compress-worker     # the worker binary

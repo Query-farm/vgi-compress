@@ -1,0 +1,665 @@
+{
+  "schema_version": 1,
+  "status": "met",
+  "meets_target": true,
+  "catalogs": {
+    "released": {
+      "catalog_status": "verified",
+      "revision": "v0.4.0",
+      "catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+      "collection_reconciled": true,
+      "denominator": 9,
+      "observed_objects": 9,
+      "required": 9,
+      "verified_count": 9,
+      "candidate_count": 0,
+      "fraction": 1.0,
+      "meets_target": true,
+      "exact_runtime_count": 9,
+      "runtime_revisions": [
+        "v0.4.0"
+      ],
+      "covered": [
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "codecs"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compress"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compressed_size"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress_auto"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompressed_size"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "detect_codec"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "is_valid"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "ratio"
+        }
+      ],
+      "uncovered": [],
+      "objects": [
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "codecs",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "codecs() -> VARCHAR[]"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compress",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "compress(input ANY, codec VARCHAR) -> BLOB",
+            "compress(input ANY, codec VARCHAR, level ANY) -> BLOB"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compressed_size",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "compressed_size(input ANY, codec VARCHAR) -> UBIGINT",
+            "compressed_size(input ANY, codec VARCHAR, level ANY) -> UBIGINT"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "decompress(input ANY, codec VARCHAR) -> BLOB",
+            "decompress(input ANY, codec VARCHAR, max_output_bytes ANY) -> BLOB"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress_auto",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "decompress_auto(input BLOB) -> BLOB",
+            "decompress_auto(input BLOB, max_output_bytes ANY) -> BLOB"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompressed_size",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "decompressed_size(input ANY, codec VARCHAR) -> UBIGINT",
+            "decompressed_size(input ANY, codec VARCHAR, max_output_bytes ANY) -> UBIGINT"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "detect_codec",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "detect_codec(input ANY) -> VARCHAR"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "is_valid",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "is_valid(input ANY, codec VARCHAR) -> BOOLEAN"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "ratio",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "ratio(input ANY, codec VARCHAR) -> DOUBLE",
+            "ratio(input ANY, codec VARCHAR, level ANY) -> DOUBLE"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        }
+      ],
+      "issues": []
+    },
+    "current": {
+      "catalog_status": "verified",
+      "revision": "fc86f5283e7b2b77601459409438fc03b15a66d3",
+      "catalog_sha256": "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d",
+      "collection_reconciled": true,
+      "denominator": 9,
+      "observed_objects": 9,
+      "required": 9,
+      "verified_count": 9,
+      "candidate_count": 0,
+      "fraction": 1.0,
+      "meets_target": true,
+      "exact_runtime_count": 0,
+      "runtime_revisions": [
+        "v0.4.0"
+      ],
+      "covered": [
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "codecs"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compress"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compressed_size"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress_auto"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompressed_size"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "detect_codec"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "is_valid"
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "ratio"
+        }
+      ],
+      "uncovered": [],
+      "objects": [
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "codecs",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "codecs() -> VARCHAR[]"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compress",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "compress(input ANY, codec VARCHAR) -> BLOB",
+            "compress(input ANY, codec VARCHAR, level ANY) -> BLOB"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "compressed_size",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "compressed_size(input ANY, codec VARCHAR) -> UBIGINT",
+            "compressed_size(input ANY, codec VARCHAR, level ANY) -> UBIGINT"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "decompress(input ANY, codec VARCHAR) -> BLOB",
+            "decompress(input ANY, codec VARCHAR, max_output_bytes ANY) -> BLOB"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompress_auto",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "decompress_auto(input BLOB) -> BLOB",
+            "decompress_auto(input BLOB, max_output_bytes ANY) -> BLOB"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "decompressed_size",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "decompressed_size(input ANY, codec VARCHAR) -> UBIGINT",
+            "decompressed_size(input ANY, codec VARCHAR, max_output_bytes ANY) -> UBIGINT"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "detect_codec",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "detect_codec(input ANY) -> VARCHAR"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "is_valid",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "is_valid(input ANY, codec VARCHAR) -> BOOLEAN"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        },
+        {
+          "schema": [
+            "main"
+          ],
+          "name": "ratio",
+          "kinds": [
+            "function"
+          ],
+          "signatures": [
+            "ratio(input ANY, codec VARCHAR) -> DOUBLE",
+            "ratio(input ANY, codec VARCHAR, level ANY) -> DOUBLE"
+          ],
+          "access": [
+            "read"
+          ],
+          "authentication": [
+            "none"
+          ]
+        }
+      ],
+      "issues": []
+    }
+  },
+  "interface_drift": {
+    "known": true,
+    "current_only": [],
+    "released_only": [],
+    "changed": []
+  },
+  "notebooks": {
+    "01_where_to_put_the_batch_boundary.ipynb": {
+      "verified": true,
+      "issues": []
+    }
+  },
+  "examples": [
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "codecs"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "compress"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "decompress"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "decompress_auto"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "detect_codec"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "is_valid"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "compressed_size"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "ratio"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    },
+    {
+      "status": "verified",
+      "issues": [],
+      "verified_catalogs": [
+        "released",
+        "current"
+      ],
+      "object": {
+        "schema": [
+          "main"
+        ],
+        "name": "decompressed_size"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "runtime_revision": "v0.4.0",
+      "runtime_catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd"
+    }
+  ],
+  "issues": []
+}

@@ -1,96 +1,110 @@
-# Compression notebooks
+# Compression boundary examples
 
 [01 · The compression boundary changes the result](01_where_to_put_the_batch_boundary.ipynb)
-asks how much space batching saves when the input events and codec stay fixed.
-Visible SQL generates two synthetic JSON streams, forms ordered batches, calls
-the real VGI gzip/zstd functions and verifies exact bounded decompression. Two
-embedded charts compare stored bytes across batch sizes and against individual
-event compression. The end experiment changes only the selected batch boundary.
+compares identical synthetic JSON events compressed individually or in batches.
+It preserves the original gzip/zstd comparison and two figures, adding a supported-codec
+preflight, bounded automatic decode, capacity estimates and distinct empty/missing/
+malformed-input controls. All nine public SQL functions contribute to the investigation.
 
-## Run from this directory
+Use the notebook's **Open in Colab** button, run the install cell, then **Run all**.
+All payloads are generated in visible SQL; no clone, companion download, data file or
+account is required. The base shared package preserves compatible preloaded plotting
+and data libraries. Fresh Python 3.12 notebook-only execution with preloaded libraries
+is tested separately; an actual hosted Colab session has not been tested.
 
-Install [uv](https://docs.astral.sh/uv/), then:
+For local execution, install Python 3.11+ and [uv](https://docs.astral.sh/uv/):
 
 ```sh
 cd notebooks
-uv sync --locked
-uv run --locked python execute.py
+uv sync --locked --extra runner
+uv run --locked --extra runner vgi-notebooks
 ```
 
-In a notebook editor choose this directory's `.venv/bin/python` kernel and run
-all cells. The full notebook directory also works when copied outside the worker
-repository. Python 3.13–3.14 is supported; `uv` can provision the interpreter.
-No Rust compiler, local worker build or root virtual environment is required.
+The optional `runner` extra supplies a local execution kernel. For interactive Jupyter,
+register it with `uv run --locked --extra runner python -m ipykernel install --user
+--name vgi-compress-notebooks --display-name 'VGI Compress notebooks'`, select that
+kernel, then restart and run all after changing parameters.
 
-The connection stays visible and uses a literal published release:
+The visible worker connection is:
 
 ```sql
 INSTALL vgi FROM community;
 LOAD vgi;
 ATTACH 'compress' (TYPE vgi,
-  LOCATION 'github-auto://Query-farm/vgi-compress@v0.4.0');
+ LOCATION 'github-auto://Query-farm/vgi-compress@v0.4.0');
 ```
 
-VGI selects the native platform archive, verifies its SHA256 sidecar and caches
-it. This release supplies macOS arm64 and Linux amd64/arm64 assets. The notebook
-environment locks Haybarn 2.0.0rc11 and its visualization dependencies. Initial
-installation needs network access; the analysis uses local synthetic bytes and
-no credentials or data APIs. Change the visible release tag and rerun all checks
-when adopting another release.
-
-Parameters, connection SQL, analytical SQL and useful outputs remain visible.
-Imports, styling, plotting, prose-generation source and cleanup are folded.
+Haybarn 2.0.0rc11 downloads and verifies the native release asset for the platform.
+No Rust compiler, checkout binary or dependency override is required. Initial Python,
+extension and worker downloads require network access; all subsequent computation
+uses synthetic bytes in memory. Native validation ran on macOS Apple silicon; release
+assets determine availability on other platforms. The shared connection uses an empty
+temporary SQL-secret directory with persistent secrets disabled and explicit cleanup.
 
 ## One-parameter experiment
 
 ```sh
-uv run --locked python execute.py --parameters '{"EVENTS_PER_BATCH":128}' \
-  --output-dir validation/batch-128
+uv run --locked --extra runner vgi-notebooks \
+  --parameters '{"EVENTS_PER_BATCH":128}' --output-dir validation/batch-128
 ```
 
-The accepted sizes are 1, 8, 32 and 128; default 32, experiment 128. Each stream
-always contains 512 events. All four reference sizes are calculated each run;
-the selected parameter controls the highlighted points and detailed comparison.
-Reset to 32 after comparing results.
+The default selects 32 events per batch. The experiment selects 128, changing each
+512-event stream from 16 to 4 independently compressed units. Raw bytes remain 38,912
+per stream. The largest measured saving against individual-event compression changes
+from 93.3% (repeated payload / gzip) to 97.0% (repeated payload / zstd). These are results
+for the stated synthetic inputs, not general codec rankings.
 
-The runner creates fresh kernels, rejects unknown parameter names and source
-overwrites, and replaces saved notebooks only after successful execution. Copies
-include branding, helpers, the locked environment and this guide. Logs, extracted
-charts and experiments are ignored under `validation/`; the main notebook keeps
-its embedded charts and successful outputs.
+The reference sweep at 1, 8, 32 and 128 is unchanged; the chosen points and selected
+comparison change. Every selected decode unit expands from 2,432 to 9,728 bytes.
+Both exceed the separate 1,024-byte preview-size budget, while the full decoder's
+explicit 1 MiB cap accommodates all generated batches. Fewer stored units do not
+imply a smaller unit for retrieval, replacement or decoding.
 
-## Provenance and interpretation
+Accepted values are integers 1, 8, 32 and 128; booleans are rejected. Reset to 32 for
+the default. Invalid overrides and failed runs preserve the saved default and last
+successful experiment.
 
-The two synthetic JSON streams share a fixed envelope, sequence strings, event
-counts and raw byte sizes. One payload repeats `ab`; the other uses deterministic
-MD5 hexadecimal text for variety. This is not a sample of production telemetry,
-and the digest stream is not claimed to be random or incompressible. MD5 is not
-used as an integrity proof: the invariant checks compare complete decoded bytes.
+## What the measurements mean
 
-SQL includes the newline after every event and orders records explicitly inside
-each batch. All compression and decompression use the published VGI worker;
-Python only configures the notebook and presents its returned data. Compressed
-BLOBs are materialized before summary queries and plotting.
+Each stream contains 512 JSON events, with the same envelope and 32-character payload.
+One payload repeats `ab`; the other uses deterministic MD5 hexadecimal text for variety.
+Digest text is not a claim of randomness or incompressibility. The ordered aggregation
+includes one newline per event and preserves event order within every batch.
 
-Gzip uses its default level 6 and zstd its default level 3. Those numbers are
-codec-specific, not equal effort settings. Each batch is an independent stream.
-Decoding calls enforce an explicit 1 MiB output cap per batch. Headers and codec
-framing count toward stored bytes; database row metadata, indexes, filenames and
-transport envelopes do not. One KiB is 1,024 bytes. The figures measure storage,
-not encode/decode timing, system throughput or query latency.
+`codecs()` drives an explicit supported-codec join; we intentionally choose gzip and
+zstd from the twelve available names. Their default levels (6 and 3) are codec-specific,
+not equivalent effort settings. Materialized BLOBs drive the plots. The capacity audit
+also uses `compressed_size` and `ratio`, which perform compression work again without
+retaining their own output BLOBs. They are not cost-free header inspections.
 
-Detection succeeds for the two framed codecs tested. The final Brotli control
-shows that a valid stream can still have an `unknown` detected format; preserve
-codec labels rather than assuming every format is self-identifying. Unknown,
-invalid and NULL payloads are distinct states. A decompression-cap failure is an
-error, not a successful empty payload.
+The worker ratio is compressed / original; its weighted aggregate matches total stored
+bytes / total original bytes. `decompressed_size` takes compressed input and returns
+NULL when its cap prevents reporting the size. Some codecs can read a size trailer;
+size introspection alone does not establish full-stream validity. `is_valid`, explicit
+bounded decoding and automatic bounded decoding check different parts of the contract.
 
-Larger batches change the unit that must be decoded or replaced. Production
-selection also needs access-pattern, update and latency measurements. These
-examples establish the storage tradeoff for the specific fixed inputs only.
+The valid Brotli control returns an unknown detector label but decodes with its declared
+codec. Empty gzip decodes to zero bytes and has an undefined ratio; malformed gzip
+returns false from `is_valid`, while missing input remains NULL. Those states are
+preserved rather than collapsed into one successful-looking fallback.
 
-The official Strata Sun and VGI assets are unchanged Query.Farm media-kit files,
-with linked Strata Sun branding at the beginning and final end of the notebook.
+This is a stored-byte investigation, not a speed benchmark. It excludes database row
+headers, indexes and transport envelopes. A production choice also needs measurements
+of latency, update frequency, retrieval granularity and the actual payload distribution.
+Twelve SQL checks plus capability/aggregate assertions validate the demonstrated
+contracts; they do not cover every codec, level or hostile stream.
 
-References: [worker documentation](https://github.com/Query-farm/vgi-compress),
-[pinned release](https://github.com/Query-farm/vgi-compress/releases/tag/v0.4.0).
+## Shared tools and coverage
+
+The [shared standard and runner](https://github.com/Query-farm/vgi-example-notebooks/blob/v0.3.6/docs/standard.md)
+are pinned at **v0.3.6**. There are no copied presentation or execution helpers.
+Charts retain native SVG and content-addressed `charts/` assets for GitHub; experiment
+copies keep native SVG. Retain prior published assets when updating a notebook.
+
+[Coverage evidence](coverage.json) verifies **9/9** logical SQL surfaces in both
+released v0.4.0 and the reviewed current-public interface. `coverage/` contains complete
+actual function/table/view exports, source compatibility review, successful execution
+hashes and explicit narrative/result interpretation. Overloads count once per
+`(schema,name)`. Current-source discovery is separate from the native release used
+for the analytical notebook. Reviewed release/current changes clarify documentation,
+add composed examples and add tests; codec logic and public signatures are unchanged.

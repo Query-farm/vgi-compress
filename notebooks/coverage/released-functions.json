@@ -1,0 +1,615 @@
+{
+  "collector": "Haybarn 2.0.0rc11 actual engine catalog export",
+  "query": "SELECT * FROM duckdb_functions() WHERE database_name='compress'",
+  "captured_at": "2026-11-14T18:22:43.505496+00:00",
+  "columns": [
+    "database_name",
+    "database_oid",
+    "schema_name",
+    "function_name",
+    "alias_of",
+    "function_type",
+    "description",
+    "comment",
+    "tags",
+    "return_type",
+    "parameters",
+    "parameter_types",
+    "varargs",
+    "macro_definition",
+    "has_side_effects",
+    "internal",
+    "extension_name",
+    "function_oid",
+    "examples",
+    "stability",
+    "categories"
+  ],
+  "rows": [
+    [
+      "compress",
+      "22592",
+      "main",
+      "is_valid",
+      null,
+      "scalar",
+      "TRUE iff the BLOB is a well-formed stream for the codec (never errors)",
+      null,
+      {
+        "vgi.category": "introspection",
+        "vgi.doc_llm": "Return TRUE iff input is a well-formed stream for codec \u2014 a trial decode under the bomb guard, output discarded. Never errors: corrupt, truncated, or wrong-codec input is FALSE, not a throw (and a stream that would exceed the default cap is FALSE). NULL input \u2192 NULL.",
+        "vgi.doc_md": "TRUE iff a `BLOB` is a well-formed stream for a codec, e.g. `is_valid(b, 'gzip')`. Never throws \u2014 bad input is FALSE. Returns `BOOLEAN`.",
+        "vgi.example_queries": "[{\"description\":\"Check whether a blob is a well-formed gzip stream.\",\"sql\":\"SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip') AS ok\"}]",
+        "vgi.keywords": "[\"is_valid\",\"valid\",\"well formed\",\"check\",\"verify\",\"trial decode\",\"codec\",\"blob\",\"total\"]",
+        "vgi.title": "Is Valid Stream"
+      },
+      "BOOLEAN",
+      [
+        "input",
+        "codec"
+      ],
+      [
+        "ANY",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22603,
+      [
+        "SELECT compress.main.is_valid(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip') AS ok"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "compress",
+      null,
+      "scalar",
+      "Compress a BLOB with the given codec at the codec's default level",
+      null,
+      {
+        "vgi.category": "encode",
+        "vgi.doc_llm": "Compress a `BLOB` with the named codec (case-insensitive): zstd, gzip, zlib, deflate, brotli, lz4, lz4_block, snappy, snappy_raw, xz, lzma, bzip2. The optional third argument is the compression level \u2014 NULL or omitted uses the codec default; an out-of-range level clamps to the codec's range; it is ignored for level-less codecs (snappy/snappy_raw). Returns the compressed bytes in the codec's canonical container (framed where the codec has a frame). NULL input \u2192 NULL; empty input \u2192 the codec's valid empty stream. The inverse of decompress.",
+        "vgi.doc_md": "Compress a `BLOB` with a codec, e.g. `compress(b, 'zstd', 19)`. Level is optional (codec default when omitted). Returns a `BLOB`; the inverse of `decompress`.",
+        "vgi.example_queries": "[{\"description\":\"Compress a blob with gzip at the default level.\",\"sql\":\"SELECT compress.main.compress('the quick brown fox'::BLOB, 'gzip') AS packed\"},{\"description\":\"Compress a blob with zstd at level 19.\",\"sql\":\"SELECT compress.main.compress('the quick brown fox'::BLOB, 'zstd', 19) AS packed\"}]",
+        "vgi.executable_examples": "[{\"description\":\"Round-trip a blob through gzip and read it back as text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hello, world'::BLOB, 'gzip'), 'gzip')::VARCHAR AS roundtrip\",\"expected_result\":[{\"roundtrip\":\"hello, world\"}]},{\"description\":\"Detect the codec of a zstd-compressed blob.\",\"sql\":\"SELECT compress.main.detect_codec(compress.main.compress('payload'::BLOB, 'zstd')) AS codec\",\"expected_result\":[{\"codec\":\"zstd\"}]}]",
+        "vgi.keywords": "[\"compress\",\"deflate\",\"gzip\",\"zstd\",\"brotli\",\"lz4\",\"snappy\",\"xz\",\"lzma\",\"bzip2\",\"encode\",\"pack\",\"shrink\",\"codec\",\"blob\",\"level\",\"transcode\"]",
+        "vgi.title": "Compress a BLOB"
+      },
+      "BLOB",
+      [
+        "input",
+        "codec"
+      ],
+      [
+        "ANY",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22597,
+      [
+        "SELECT compress.main.compress('the quick brown fox'::BLOB, 'gzip') AS packed",
+        "SELECT compress.main.compress('the quick brown fox'::BLOB, 'zstd', 19) AS packed"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "compress",
+      null,
+      "scalar",
+      "Compress a BLOB with the given codec and explicit level (codec default if NULL)",
+      null,
+      {
+        "vgi.category": "encode",
+        "vgi.doc_llm": "Compress a `BLOB` with the named codec (case-insensitive): zstd, gzip, zlib, deflate, brotli, lz4, lz4_block, snappy, snappy_raw, xz, lzma, bzip2. The optional third argument is the compression level \u2014 NULL or omitted uses the codec default; an out-of-range level clamps to the codec's range; it is ignored for level-less codecs (snappy/snappy_raw). Returns the compressed bytes in the codec's canonical container (framed where the codec has a frame). NULL input \u2192 NULL; empty input \u2192 the codec's valid empty stream. The inverse of decompress.",
+        "vgi.doc_md": "Compress a `BLOB` with a codec, e.g. `compress(b, 'zstd', 19)`. Level is optional (codec default when omitted). Returns a `BLOB`; the inverse of `decompress`.",
+        "vgi.example_queries": "[{\"description\":\"Compress a blob with gzip at the default level.\",\"sql\":\"SELECT compress.main.compress('the quick brown fox'::BLOB, 'gzip') AS packed\"},{\"description\":\"Compress a blob with zstd at level 19.\",\"sql\":\"SELECT compress.main.compress('the quick brown fox'::BLOB, 'zstd', 19) AS packed\"}]",
+        "vgi.executable_examples": "[{\"description\":\"Round-trip a blob through gzip and read it back as text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hello, world'::BLOB, 'gzip'), 'gzip')::VARCHAR AS roundtrip\",\"expected_result\":[{\"roundtrip\":\"hello, world\"}]},{\"description\":\"Detect the codec of a zstd-compressed blob.\",\"sql\":\"SELECT compress.main.detect_codec(compress.main.compress('payload'::BLOB, 'zstd')) AS codec\",\"expected_result\":[{\"codec\":\"zstd\"}]}]",
+        "vgi.keywords": "[\"compress\",\"deflate\",\"gzip\",\"zstd\",\"brotli\",\"lz4\",\"snappy\",\"xz\",\"lzma\",\"bzip2\",\"encode\",\"pack\",\"shrink\",\"codec\",\"blob\",\"level\",\"transcode\"]",
+        "vgi.title": "Compress a BLOB"
+      },
+      "BLOB",
+      [
+        "input",
+        "codec",
+        "level"
+      ],
+      [
+        "ANY",
+        "VARCHAR",
+        "ANY"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22597,
+      [
+        "SELECT compress.main.compress('the quick brown fox'::BLOB, 'gzip') AS packed",
+        "SELECT compress.main.compress('the quick brown fox'::BLOB, 'zstd', 19) AS packed"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "compressed_size",
+      null,
+      "scalar",
+      "Byte length of compress(input, codec) at the codec default level, without materializing the output",
+      null,
+      {
+        "vgi.category": "introspection",
+        "vgi.doc_llm": "Return the byte length of compress(input, codec, level) \u2014 how small the input would get \u2014 without keeping the compressed bytes around. The optional level matches compress (NULL \u2192 codec default; out-of-range clamps; ignored for level-less codecs). For 'how small would this get?' audits over a table. NULL input \u2192 NULL.",
+        "vgi.doc_md": "Byte length of `compress(input, codec, level)` without materializing it, e.g. `compressed_size(b, 'zstd', 19)`. Returns `UBIGINT`.",
+        "vgi.example_queries": "[{\"description\":\"How many bytes would this blob occupy as gzip at the default level?\",\"sql\":\"SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'gzip') AS bytes_out\"},{\"description\":\"How many bytes would this blob occupy as zstd at level 19?\",\"sql\":\"SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19) AS bytes_out\"}]",
+        "vgi.keywords": "[\"compressed_size\",\"size\",\"bytes\",\"audit\",\"how small\",\"compress size\",\"codec\",\"level\"]",
+        "vgi.title": "Estimate Compressed Byte Length"
+      },
+      "UBIGINT",
+      [
+        "input",
+        "codec"
+      ],
+      [
+        "ANY",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22598,
+      [
+        "SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'gzip') AS bytes_out",
+        "SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19) AS bytes_out"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "compressed_size",
+      null,
+      "scalar",
+      "Byte length of compress(input, codec, level) at an explicit level, without materializing the output",
+      null,
+      {
+        "vgi.category": "introspection",
+        "vgi.doc_llm": "Return the byte length of compress(input, codec, level) \u2014 how small the input would get \u2014 without keeping the compressed bytes around. The optional level matches compress (NULL \u2192 codec default; out-of-range clamps; ignored for level-less codecs). For 'how small would this get?' audits over a table. NULL input \u2192 NULL.",
+        "vgi.doc_md": "Byte length of `compress(input, codec, level)` without materializing it, e.g. `compressed_size(b, 'zstd', 19)`. Returns `UBIGINT`.",
+        "vgi.example_queries": "[{\"description\":\"How many bytes would this blob occupy as gzip at the default level?\",\"sql\":\"SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'gzip') AS bytes_out\"},{\"description\":\"How many bytes would this blob occupy as zstd at level 19?\",\"sql\":\"SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19) AS bytes_out\"}]",
+        "vgi.keywords": "[\"compressed_size\",\"size\",\"bytes\",\"audit\",\"how small\",\"compress size\",\"codec\",\"level\"]",
+        "vgi.title": "Estimate Compressed Byte Length"
+      },
+      "UBIGINT",
+      [
+        "input",
+        "codec",
+        "level"
+      ],
+      [
+        "ANY",
+        "VARCHAR",
+        "ANY"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22598,
+      [
+        "SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'gzip') AS bytes_out",
+        "SELECT compress.main.compressed_size('the quick brown fox'::BLOB, 'zstd', 19) AS bytes_out"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "decompress_auto",
+      null,
+      "scalar",
+      "Auto-detect the codec by magic bytes and decompress (default bomb-guard cap)",
+      null,
+      {
+        "vgi.category": "decode",
+        "vgi.doc_llm": "Detect the codec by magic bytes, then decompress (the inverse of compress without naming the codec). Resolves only magic-bearing codecs: zstd, gzip, zlib, xz, lzma, bzip2, lz4 (frame), snappy (framed). Headerless codecs (brotli, deflate, lz4_block, snappy_raw) carry no signature and return a per-row 'cannot auto-detect codec (no magic bytes)' error \u2014 use the explicit decompress form. Same decompression-bomb guard as decompress (optional max_output_bytes; default 256 MiB). NULL input \u2192 NULL.",
+        "vgi.doc_md": "Auto-detect the codec by magic bytes and decompress, e.g. `decompress_auto(value, 67108864)`. Only magic-bearing codecs resolve; headerless ones error. Returns a `BLOB`.",
+        "vgi.example_queries": "[{\"description\":\"Auto-detect the codec by magic bytes and decompress a blob to text.\",\"sql\":\"SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'))::VARCHAR AS plaintext\"},{\"description\":\"Auto-detect and decompress a gzip blob with a 64 MiB/row output cap.\",\"sql\":\"SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'), 67108864) AS plaintext\"}]",
+        "vgi.keywords": "[\"decompress_auto\",\"auto-detect\",\"magic bytes\",\"sniff codec\",\"mixed codec\",\"kafka\",\"decode\",\"gunzip\",\"unzstd\",\"blob\",\"decompression bomb\",\"max_output_bytes\"]",
+        "vgi.title": "Auto-detect & Decompress a BLOB"
+      },
+      "BLOB",
+      [
+        "input"
+      ],
+      [
+        "BLOB"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22600,
+      [
+        "SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'))::VARCHAR AS plaintext",
+        "SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'), 67108864) AS plaintext"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "decompress_auto",
+      null,
+      "scalar",
+      "Auto-detect the codec by magic bytes and decompress, capping output at max_output_bytes",
+      null,
+      {
+        "vgi.category": "decode",
+        "vgi.doc_llm": "Detect the codec by magic bytes, then decompress (the inverse of compress without naming the codec). Resolves only magic-bearing codecs: zstd, gzip, zlib, xz, lzma, bzip2, lz4 (frame), snappy (framed). Headerless codecs (brotli, deflate, lz4_block, snappy_raw) carry no signature and return a per-row 'cannot auto-detect codec (no magic bytes)' error \u2014 use the explicit decompress form. Same decompression-bomb guard as decompress (optional max_output_bytes; default 256 MiB). NULL input \u2192 NULL.",
+        "vgi.doc_md": "Auto-detect the codec by magic bytes and decompress, e.g. `decompress_auto(value, 67108864)`. Only magic-bearing codecs resolve; headerless ones error. Returns a `BLOB`.",
+        "vgi.example_queries": "[{\"description\":\"Auto-detect the codec by magic bytes and decompress a blob to text.\",\"sql\":\"SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'))::VARCHAR AS plaintext\"},{\"description\":\"Auto-detect and decompress a gzip blob with a 64 MiB/row output cap.\",\"sql\":\"SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'), 67108864) AS plaintext\"}]",
+        "vgi.keywords": "[\"decompress_auto\",\"auto-detect\",\"magic bytes\",\"sniff codec\",\"mixed codec\",\"kafka\",\"decode\",\"gunzip\",\"unzstd\",\"blob\",\"decompression bomb\",\"max_output_bytes\"]",
+        "vgi.title": "Auto-detect & Decompress a BLOB"
+      },
+      "BLOB",
+      [
+        "input",
+        "max_output_bytes"
+      ],
+      [
+        "BLOB",
+        "ANY"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22600,
+      [
+        "SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'))::VARCHAR AS plaintext",
+        "SELECT compress.main.decompress_auto(compress.main.compress('hi'::BLOB, 'gzip'), 67108864) AS plaintext"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "detect_codec",
+      null,
+      "scalar",
+      "Return the codec name of a BLOB by magic bytes, or 'unknown'",
+      null,
+      {
+        "vgi.category": "discovery",
+        "vgi.doc_llm": "Return the codec name a `BLOB` is compressed with ('gzip', 'zstd', 'xz', \u2026) by magic-byte match, validated against a trial decode of the leading block to reject weak-magic false positives. Returns 'unknown' when no signature matches \u2014 which includes every HEADERLESS codec (brotli, deflate, lz4_block, snappy_raw carry no magic and can never be detected; use the explicit decompress form for those). Cheap: inspects only the first few bytes plus a bounded trial. Never errors. NULL input \u2192 NULL.",
+        "vgi.doc_md": "Return the codec of a `BLOB` by magic bytes, e.g. `detect_codec(b)` \u2192 'gzip', or 'unknown' for headerless/unrecognized input. Never errors.",
+        "vgi.example_queries": "[{\"description\":\"Identify the codec of a compressed blob from its magic bytes.\",\"sql\":\"SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB, 'zstd')) AS codec\"}]",
+        "vgi.keywords": "[\"detect_codec\",\"sniff\",\"magic bytes\",\"identify codec\",\"gzip\",\"zstd\",\"xz\",\"bzip2\",\"lz4\",\"snappy\",\"auto-detect\",\"unknown\"]",
+        "vgi.title": "Detect Codec by Magic Bytes"
+      },
+      "VARCHAR",
+      [
+        "input"
+      ],
+      [
+        "ANY"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22602,
+      [
+        "SELECT compress.main.detect_codec(compress.main.compress('hi'::BLOB, 'zstd')) AS codec"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "decompress",
+      null,
+      "scalar",
+      "Decompress a BLOB with the given codec (default bomb-guard output cap)",
+      null,
+      {
+        "vgi.category": "decode",
+        "vgi.doc_llm": "Decompress a `BLOB` with the named codec (the inverse of compress). The optional third argument max_output_bytes is the decompression-bomb guard: decoding aborts the row once output would exceed the cap and returns a per-row error, so the worker never OOMs. NULL/omitted uses the worker's configured default cap (the compress_max_output_bytes ATTACH option / env, default 256 MiB); pass a large value to opt out per call. Malformed, truncated, or wrong-codec input returns a clean per-row error, never a panic. NULL input \u2192 NULL.",
+        "vgi.doc_md": "Decompress a `BLOB` with a codec, e.g. `decompress(b, 'gzip')`. Optional `max_output_bytes` caps output (bomb guard; default 256 MiB). Returns a `BLOB`; the inverse of `compress`.",
+        "vgi.example_queries": "[{\"description\":\"Decompress a gzip blob and cast the bytes back to text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip')::VARCHAR AS body\"},{\"description\":\"Decompress a gzip blob with a 64 MiB output cap.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip', 67108864) AS body\"}]",
+        "vgi.keywords": "[\"decompress\",\"inflate\",\"gunzip\",\"unzstd\",\"decode\",\"unpack\",\"expand\",\"codec\",\"blob\",\"decompression bomb\",\"max_output_bytes\",\"gzip\",\"zstd\",\"brotli\",\"lz4\",\"snappy\",\"xz\",\"bzip2\"]",
+        "vgi.title": "Decompress a BLOB"
+      },
+      "BLOB",
+      [
+        "input",
+        "codec"
+      ],
+      [
+        "ANY",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22599,
+      [
+        "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip')::VARCHAR AS body",
+        "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip', 67108864) AS body"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "decompress",
+      null,
+      "scalar",
+      "Decompress a BLOB with the given codec, capping output at max_output_bytes",
+      null,
+      {
+        "vgi.category": "decode",
+        "vgi.doc_llm": "Decompress a `BLOB` with the named codec (the inverse of compress). The optional third argument max_output_bytes is the decompression-bomb guard: decoding aborts the row once output would exceed the cap and returns a per-row error, so the worker never OOMs. NULL/omitted uses the worker's configured default cap (the compress_max_output_bytes ATTACH option / env, default 256 MiB); pass a large value to opt out per call. Malformed, truncated, or wrong-codec input returns a clean per-row error, never a panic. NULL input \u2192 NULL.",
+        "vgi.doc_md": "Decompress a `BLOB` with a codec, e.g. `decompress(b, 'gzip')`. Optional `max_output_bytes` caps output (bomb guard; default 256 MiB). Returns a `BLOB`; the inverse of `compress`.",
+        "vgi.example_queries": "[{\"description\":\"Decompress a gzip blob and cast the bytes back to text.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip')::VARCHAR AS body\"},{\"description\":\"Decompress a gzip blob with a 64 MiB output cap.\",\"sql\":\"SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip', 67108864) AS body\"}]",
+        "vgi.keywords": "[\"decompress\",\"inflate\",\"gunzip\",\"unzstd\",\"decode\",\"unpack\",\"expand\",\"codec\",\"blob\",\"decompression bomb\",\"max_output_bytes\",\"gzip\",\"zstd\",\"brotli\",\"lz4\",\"snappy\",\"xz\",\"bzip2\"]",
+        "vgi.title": "Decompress a BLOB"
+      },
+      "BLOB",
+      [
+        "input",
+        "codec",
+        "max_output_bytes"
+      ],
+      [
+        "ANY",
+        "VARCHAR",
+        "ANY"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22599,
+      [
+        "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip')::VARCHAR AS body",
+        "SELECT compress.main.decompress(compress.main.compress('hi'::BLOB, 'gzip'), 'gzip', 67108864) AS body"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "codecs",
+      null,
+      "scalar",
+      "List the codec names this build supports (reflects feature flags)",
+      null,
+      {
+        "vgi.category": "discovery",
+        "vgi.doc_llm": "Return the list of codec names this build supports, so SQL can discover the surface without a docs lookup. Reflects compiled-in features (e.g. which xz backend, or a codec opt-out). Use the returned names as the codec argument to compress / decompress / compressed_size / ratio / is_valid.",
+        "vgi.doc_md": "List the codec names this build supports, e.g. `codecs()` \u2192 ['zstd','gzip',\u2026]. Returns `LIST(VARCHAR)`.",
+        "vgi.example_queries": "[{\"description\":\"List every codec this build supports.\",\"sql\":\"SELECT compress.main.codecs() AS codecs\"},{\"description\":\"Check whether this build supports zstd.\",\"sql\":\"SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd\"}]",
+        "vgi.keywords": "[\"codecs\",\"supported codecs\",\"list codecs\",\"discovery\",\"available\",\"what codecs\",\"capability\"]",
+        "vgi.title": "Supported Codecs"
+      },
+      "VARCHAR[]",
+      [],
+      [],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22596,
+      [
+        "SELECT compress.main.codecs() AS codecs",
+        "SELECT list_contains(compress.main.codecs(), 'zstd') AS has_zstd"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "ratio",
+      null,
+      "scalar",
+      "Output-over-input compression ratio at the codec default level (< 1.0 means it shrank; NULL if empty)",
+      null,
+      {
+        "vgi.category": "introspection",
+        "vgi.doc_llm": "Return the output-over-input compression ratio compressed_size / length(input), so a value < 1.0 means the input shrank. The optional level matches compress. NULL on empty input. For a compression audit over a table.",
+        "vgi.doc_md": "Output-over-input ratio `compressed_size / length(input)`, e.g. `ratio(b, 'zstd', 19)`; < 1.0 means it shrank. Returns `DOUBLE` (NULL on empty input).",
+        "vgi.example_queries": "[{\"description\":\"What compression ratio does gzip achieve on this blob at the default level?\",\"sql\":\"SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'gzip') AS ratio\"},{\"description\":\"What compression ratio does zstd at level 19 achieve on this blob?\",\"sql\":\"SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19) AS ratio\"}]",
+        "vgi.keywords": "[\"ratio\",\"compression ratio\",\"savings\",\"shrink\",\"out over in\",\"audit\",\"codec\",\"level\"]",
+        "vgi.title": "Compression Ratio"
+      },
+      "DOUBLE",
+      [
+        "input",
+        "codec"
+      ],
+      [
+        "ANY",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22604,
+      [
+        "SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'gzip') AS ratio",
+        "SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19) AS ratio"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "ratio",
+      null,
+      "scalar",
+      "Output-over-input compression ratio at an explicit level (< 1.0 means it shrank; NULL if empty)",
+      null,
+      {
+        "vgi.category": "introspection",
+        "vgi.doc_llm": "Return the output-over-input compression ratio compressed_size / length(input), so a value < 1.0 means the input shrank. The optional level matches compress. NULL on empty input. For a compression audit over a table.",
+        "vgi.doc_md": "Output-over-input ratio `compressed_size / length(input)`, e.g. `ratio(b, 'zstd', 19)`; < 1.0 means it shrank. Returns `DOUBLE` (NULL on empty input).",
+        "vgi.example_queries": "[{\"description\":\"What compression ratio does gzip achieve on this blob at the default level?\",\"sql\":\"SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'gzip') AS ratio\"},{\"description\":\"What compression ratio does zstd at level 19 achieve on this blob?\",\"sql\":\"SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19) AS ratio\"}]",
+        "vgi.keywords": "[\"ratio\",\"compression ratio\",\"savings\",\"shrink\",\"out over in\",\"audit\",\"codec\",\"level\"]",
+        "vgi.title": "Compression Ratio"
+      },
+      "DOUBLE",
+      [
+        "input",
+        "codec",
+        "level"
+      ],
+      [
+        "ANY",
+        "VARCHAR",
+        "ANY"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22604,
+      [
+        "SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'gzip') AS ratio",
+        "SELECT compress.main.ratio('the quick brown fox jumps'::BLOB, 'zstd', 19) AS ratio"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "decompressed_size",
+      null,
+      "scalar",
+      "Decompressed byte length of a compressed BLOB under the default output cap (NULL past it)",
+      null,
+      {
+        "vgi.category": "introspection",
+        "vgi.doc_llm": "Return the decompressed byte length of a compressed `BLOB`. For codecs that record the size (gzip ISIZE) it is read directly and cheaply; otherwise the stream is counted under the decompression-bomb guard. Returns NULL if a full decode would exceed the cap (the optional max_output_bytes; default 256 MiB). NULL input \u2192 NULL. Malformed input \u2192 per-row error.",
+        "vgi.doc_md": "Decompressed byte length of a compressed `BLOB`, e.g. `decompressed_size(b, 'gzip')`. NULL if decoding would exceed the cap. Returns `UBIGINT`.",
+        "vgi.example_queries": "[{\"description\":\"How big does this gzip blob expand to?\",\"sql\":\"SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip') AS bytes\"},{\"description\":\"How big does this gzip blob expand to, under a 64 MiB cap?\",\"sql\":\"SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip', 67108864) AS bytes\"}]",
+        "vgi.keywords": "[\"decompressed_size\",\"uncompressed size\",\"original size\",\"isize\",\"expand size\",\"codec\",\"max_output_bytes\",\"audit\"]",
+        "vgi.title": "Decoded Output Byte Length"
+      },
+      "UBIGINT",
+      [
+        "input",
+        "codec"
+      ],
+      [
+        "ANY",
+        "VARCHAR"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22601,
+      [
+        "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip') AS bytes",
+        "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip', 67108864) AS bytes"
+      ],
+      "CONSISTENT",
+      []
+    ],
+    [
+      "compress",
+      "22592",
+      "main",
+      "decompressed_size",
+      null,
+      "scalar",
+      "Decompressed byte length of a compressed BLOB, capped at max_output_bytes (NULL past the cap)",
+      null,
+      {
+        "vgi.category": "introspection",
+        "vgi.doc_llm": "Return the decompressed byte length of a compressed `BLOB`. For codecs that record the size (gzip ISIZE) it is read directly and cheaply; otherwise the stream is counted under the decompression-bomb guard. Returns NULL if a full decode would exceed the cap (the optional max_output_bytes; default 256 MiB). NULL input \u2192 NULL. Malformed input \u2192 per-row error.",
+        "vgi.doc_md": "Decompressed byte length of a compressed `BLOB`, e.g. `decompressed_size(b, 'gzip')`. NULL if decoding would exceed the cap. Returns `UBIGINT`.",
+        "vgi.example_queries": "[{\"description\":\"How big does this gzip blob expand to?\",\"sql\":\"SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip') AS bytes\"},{\"description\":\"How big does this gzip blob expand to, under a 64 MiB cap?\",\"sql\":\"SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip', 67108864) AS bytes\"}]",
+        "vgi.keywords": "[\"decompressed_size\",\"uncompressed size\",\"original size\",\"isize\",\"expand size\",\"codec\",\"max_output_bytes\",\"audit\"]",
+        "vgi.title": "Decoded Output Byte Length"
+      },
+      "UBIGINT",
+      [
+        "input",
+        "codec",
+        "max_output_bytes"
+      ],
+      [
+        "ANY",
+        "VARCHAR",
+        "ANY"
+      ],
+      null,
+      null,
+      false,
+      true,
+      null,
+      22601,
+      [
+        "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip') AS bytes",
+        "SELECT compress.main.decompressed_size(compress.main.compress('the quick brown fox'::BLOB, 'gzip'), 'gzip', 67108864) AS bytes"
+      ],
+      "CONSISTENT",
+      []
+    ]
+  ]
+}

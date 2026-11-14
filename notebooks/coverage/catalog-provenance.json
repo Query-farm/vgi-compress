@@ -1,0 +1,13 @@
+{
+  "repository": "Query-farm/vgi-compress",
+  "released_tag": "v0.4.0",
+  "released_revision": "6a9346f1112ee4803cdf2540253f31553e0e4fa5",
+  "current_public_revision": "fc86f5283e7b2b77601459409438fc03b15a66d3",
+  "engine": "Haybarn 2.0.0rc11 / VGI e75482339d",
+  "released_launch": "github-auto://Query-farm/vgi-compress@v0.4.0",
+  "current_collection": "Separate current-public build using locked Cargo dependencies; only catalog/source validation uses checkout binary, never notebook launch.",
+  "current_root_lock_sha256": "f59b3d3f08fa35d8cae08dccc8f43ceca34f25068fc835548a9d9e72fa503744",
+  "comparison": "Release/current diffs clarify codec-list/backend documentation, add composed examples and metadata, and add tests. No codec runtime logic, argument schemas or registrations change; actual runtime exports agree.",
+  "data_isolation": "Both catalog probes and notebook connections use empty temporary secret_directory with allow_persistent_secrets=False. Pure local in-memory transforms; no authenticated/write surfaces.",
+  "captured_at": "2026-11-14T18:51:15.265337+00:00"
+}

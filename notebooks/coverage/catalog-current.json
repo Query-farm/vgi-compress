@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "repository": "Query-farm/vgi-compress",
+  "revision": "fc86f5283e7b2b77601459409438fc03b15a66d3",
+  "captured_at": "2026-11-14T18:51:15.265337+00:00",
+  "default_schema": "main",
+  "scope": "all_public_functions_and_tables",
+  "complete": true,
+  "evidence": [
+    {
+      "path": "coverage/current-functions.json",
+      "sha256": "a09d607d12e7270c0e1ae35b50fef65c6bb60d41a63e94e90ae108d7b635f1a4",
+      "description": "Complete actual worker-filtered duckdb_functions() export, including explicit empty table/view inventories."
+    },
+    {
+      "path": "coverage/current-tables.json",
+      "sha256": "5702ab0778c8958cc7b6ac207323ec036d2017041c3029325170d24ac5307710",
+      "description": "Complete actual worker-filtered duckdb_tables() export, including explicit empty table/view inventories."
+    },
+    {
+      "path": "coverage/current-views.json",
+      "sha256": "5a2790239e759c4b1fe585b6b4227dbec07dca33fd2174fcfe96db57caa33997",
+      "description": "Complete actual worker-filtered duckdb_views() export, including explicit empty table/view inventories."
+    },
+    {
+      "path": "coverage/catalog-provenance.json",
+      "sha256": "ac25eb364225b7dbba9cea5a067146c5e69473d63f29f6d7ed7be458b6f0924f",
+      "description": "Source/release identity and unchanged-domain compatibility review."
+    }
+  ],
+  "objects": [
+    {
+      "schema": "main",
+      "name": "is_valid",
+      "kind": "function",
+      "signatures": [
+        "is_valid(input ANY, codec VARCHAR) -> BOOLEAN"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "compress",
+      "kind": "function",
+      "signatures": [
+        "compress(input ANY, codec VARCHAR) -> BLOB"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "compress",
+      "kind": "function",
+      "signatures": [
+        "compress(input ANY, codec VARCHAR, level ANY) -> BLOB"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "compressed_size",
+      "kind": "function",
+      "signatures": [
+        "compressed_size(input ANY, codec VARCHAR) -> UBIGINT"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "compressed_size",
+      "kind": "function",
+      "signatures": [
+        "compressed_size(input ANY, codec VARCHAR, level ANY) -> UBIGINT"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "decompress_auto",
+      "kind": "function",
+      "signatures": [
+        "decompress_auto(input BLOB) -> BLOB"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "decompress_auto",
+      "kind": "function",
+      "signatures": [
+        "decompress_auto(input BLOB, max_output_bytes ANY) -> BLOB"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "detect_codec",
+      "kind": "function",
+      "signatures": [
+        "detect_codec(input ANY) -> VARCHAR"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "decompress",
+      "kind": "function",
+      "signatures": [
+        "decompress(input ANY, codec VARCHAR) -> BLOB"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "decompress",
+      "kind": "function",
+      "signatures": [
+        "decompress(input ANY, codec VARCHAR, max_output_bytes ANY) -> BLOB"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "codecs",
+      "kind": "function",
+      "signatures": [
+        "codecs() -> VARCHAR[]"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "ratio",
+      "kind": "function",
+      "signatures": [
+        "ratio(input ANY, codec VARCHAR) -> DOUBLE"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "ratio",
+      "kind": "function",
+      "signatures": [
+        "ratio(input ANY, codec VARCHAR, level ANY) -> DOUBLE"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "decompressed_size",
+      "kind": "function",
+      "signatures": [
+        "decompressed_size(input ANY, codec VARCHAR) -> UBIGINT"
+      ],
+      "authentication": "none",
+      "access": "read"
+    },
+    {
+      "schema": "main",
+      "name": "decompressed_size",
+      "kind": "function",
+      "signatures": [
+        "decompressed_size(input ANY, codec VARCHAR, max_output_bytes ANY) -> UBIGINT"
+      ],
+      "authentication": "none",
+      "access": "read"
+    }
+  ]
+}

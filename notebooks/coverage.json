@@ -1,0 +1,357 @@
+{
+  "schema_version": 1,
+  "catalogs": {
+    "released": {
+      "path": "coverage/catalog-released.json",
+      "sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "catalog_sha256": "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+        "notes": "Reviewed complete actual catalog union: 9 scalar function names with all arity overloads, 0 tables and 0 views. No hidden surfaces, authentication/write APIs or difficult objects omitted. Current public signatures and domain logic unchanged from release."
+      }
+    },
+    "current": {
+      "path": "coverage/catalog-current.json",
+      "sha256": "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d",
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "catalog_sha256": "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d",
+        "notes": "Reviewed complete actual catalog union: 9 scalar function names with all arity overloads, 0 tables and 0 views. No hidden surfaces, authentication/write APIs or difficult objects omitted. Current public signatures and domain logic unchanged from release."
+      }
+    }
+  },
+  "notebooks": [
+    {
+      "path": "01_where_to_put_the_batch_boundary.ipynb",
+      "sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+      "execution": {
+        "path": "coverage/run-01.json",
+        "sha256": "66dd8ec882ec9cdfd5334b34824c08c659d7472c136f42f70affcddf582e2a20"
+      }
+    }
+  ],
+  "examples": [
+    {
+      "object": {
+        "schema": "main",
+        "name": "codecs"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "compress-06",
+          "reference": "compress.main.codecs"
+        }
+      ],
+      "narrative_cells": [
+        "compress-05"
+      ],
+      "result_cells": [
+        "compress-06",
+        "codec-choice"
+      ],
+      "interpretation_cells": [
+        "codec-choice"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Validate the available format vocabulary before selecting the comparison population.",
+        "finding": "The release offers 12 codec names; an explicit supported-codec join selects 2 framed formats and drives every later compression row. Missing comparison codecs fail preflight rather than silently changing the comparison."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "compress"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "compress-11",
+          "reference": "compress.main.compress"
+        }
+      ],
+      "narrative_cells": [
+        "compress-10"
+      ],
+      "result_cells": [
+        "compress-11",
+        "compress-17",
+        "compress-20",
+        "compress-21"
+      ],
+      "interpretation_cells": [
+        "compress-20"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Measure how batch boundaries change actual stored bytes for identical events.",
+        "finding": "Each stream has 512 events and 38,912 bytes. At 32 events per batch each becomes 16 units; greatest saving versus individual compression is 93.3% for repeated/gzip. A larger batch preserves bytes but changes access/replacement granularity."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "decompress"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "compress-13",
+          "reference": "compress.main.decompress"
+        }
+      ],
+      "narrative_cells": [
+        "compress-12"
+      ],
+      "result_cells": [
+        "compress-14",
+        "control-results"
+      ],
+      "interpretation_cells": [
+        "control-results"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Recover complete declared-codec payloads with an explicit output cap, including a non-detectable codec control.",
+        "finding": "Every gzip/zstd batch recovers exact original bytes under 1 MiB. Valid Brotli reports unknown detection yet explicit decode succeeds; stored codec metadata remains necessary."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "decompress_auto"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "compress-13",
+          "reference": "compress.main.decompress_auto"
+        }
+      ],
+      "narrative_cells": [
+        "compress-12"
+      ],
+      "result_cells": [
+        "compress-14"
+      ],
+      "interpretation_cells": [
+        "compress-14"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Test whether automatic framed decoding preserves the same materialized batches before using their storage totals.",
+        "finding": "Automatic bounded decode matches every original gzip/zstd BLOB, independently checked beside explicit decoding. The seven scenario checks establish identical source bytes; this result does not extend autodetection to Brotli."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "detect_codec"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "compress-23",
+          "reference": "compress.main.detect_codec"
+        }
+      ],
+      "narrative_cells": [
+        "compress-22"
+      ],
+      "result_cells": [
+        "compress-23",
+        "control-results"
+      ],
+      "interpretation_cells": [
+        "control-results"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Distinguish an unknown format label from a corrupt compressed payload.",
+        "finding": "Known Brotli is undetectable by magic but is valid and round-trips with its declared codec; gzip/zstd batches match declared labels. Detection cannot replace format metadata."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "is_valid"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "compress-23",
+          "reference": "compress.main.is_valid"
+        }
+      ],
+      "narrative_cells": [
+        "compress-22"
+      ],
+      "result_cells": [
+        "compress-23",
+        "control-results"
+      ],
+      "interpretation_cells": [
+        "control-results"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Distinguish valid, malformed and missing input states before treating detection as rejection.",
+        "finding": "Valid Brotli is true despite an unknown label; malformed gzip is false; NULL input remains NULL. Full validity and magic identification are different questions."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "compressed_size"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "capacity-sql",
+          "reference": "compress.main.compressed_size"
+        }
+      ],
+      "narrative_cells": [
+        "capacity-story"
+      ],
+      "result_cells": [
+        "capacity-sql",
+        "capacity-result"
+      ],
+      "interpretation_cells": [
+        "capacity-result"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Estimate compressed storage without retaining another output BLOB, then reconcile to actual measured lengths.",
+        "finding": "All four selected scenarios match actual stored bytes. The function still compresses input; it does not imply a free header lookup or latency measurement."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "ratio"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "capacity-sql",
+          "reference": "compress.main.ratio"
+        }
+      ],
+      "narrative_cells": [
+        "capacity-story"
+      ],
+      "result_cells": [
+        "capacity-sql",
+        "capacity-result",
+        "control-results"
+      ],
+      "interpretation_cells": [
+        "capacity-result"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Interpret worker compression ratio using the correct denominator and aggregate weighting.",
+        "finding": "Default weighted stored/original ratios range 0.0629–0.3282 and match total stored / total original bytes. Empty input ratio is NULL because the denominator is zero, rather than implying perfect compression."
+      }
+    },
+    {
+      "object": {
+        "schema": "main",
+        "name": "decompressed_size"
+      },
+      "notebook": "01_where_to_put_the_batch_boundary.ipynb",
+      "sql": [
+        {
+          "cell": "capacity-sql",
+          "reference": "compress.main.decompressed_size"
+        }
+      ],
+      "narrative_cells": [
+        "capacity-story"
+      ],
+      "result_cells": [
+        "capacity-sql",
+        "capacity-result",
+        "control-results"
+      ],
+      "interpretation_cells": [
+        "capacity-result"
+      ],
+      "review": {
+        "status": "approved",
+        "reviewer": "Codex /root/notebooks_ortools",
+        "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
+        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "catalog_sha256": [
+          "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
+          "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
+        ],
+        "purpose": "Audit the size of a retrieval unit against a smaller preview budget, separately from storage savings.",
+        "finding": "At 32 events each unit expands to 2,432 bytes; all 64 units across four scenarios exceed the 1,024-byte preview cap and return NULL. At 128 there are 16 units of 9,728 bytes. Empty gzip reports 0 bytes; size trailers do not prove full-stream validity."
+      }
+    }
+  ]
+}
