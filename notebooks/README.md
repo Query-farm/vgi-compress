@@ -96,8 +96,8 @@ contracts; they do not cover every codec, level or hostile stream.
 
 ## Shared tools and coverage
 
-The [shared standard and runner](https://github.com/Query-farm/vgi-example-notebooks/blob/v0.3.6/docs/standard.md)
-are pinned at **v0.3.6**. There are no copied presentation or execution helpers.
+The [shared standard and runner](https://github.com/Query-farm/vgi-example-notebooks/blob/v0.3.8/docs/standard.md)
+are pinned at **v0.3.8**. There are no copied presentation or execution helpers.
 Charts retain native SVG and content-addressed `charts/` assets for GitHub; experiment
 copies keep native SVG. Retain prior published assets when updating a notebook.
 

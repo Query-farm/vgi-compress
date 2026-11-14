@@ -27,10 +27,10 @@
   "notebooks": [
     {
       "path": "01_where_to_put_the_batch_boundary.ipynb",
-      "sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+      "sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
       "execution": {
         "path": "coverage/run-01.json",
-        "sha256": "66dd8ec882ec9cdfd5334b34824c08c659d7472c136f42f70affcddf582e2a20"
+        "sha256": "bf095dd90d487bf5c94ac80a5ba2846d1358628d7436f8ea7058013cc219a913"
       }
     }
   ],
@@ -61,7 +61,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
@@ -98,7 +98,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
@@ -133,7 +133,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
@@ -167,7 +167,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
@@ -202,7 +202,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
@@ -237,7 +237,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
@@ -272,7 +272,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
@@ -308,13 +308,13 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"
         ],
         "purpose": "Interpret worker compression ratio using the correct denominator and aggregate weighting.",
-        "finding": "Default weighted stored/original ratios range 0.0629–0.3282 and match total stored / total original bytes. Empty input ratio is NULL because the denominator is zero, rather than implying perfect compression."
+        "finding": "Default weighted stored/original ratios range 0.0629\u20130.3282 and match total stored / total original bytes. Empty input ratio is NULL because the denominator is zero, rather than implying perfect compression."
       }
     },
     {
@@ -344,7 +344,7 @@
         "status": "approved",
         "reviewer": "Codex /root/notebooks_ortools",
         "reviewed_at": "2026-11-14T18:51:15.265337+00:00",
-        "notebook_sha256": "5f72a59d50c511e8290105155f4c2cab1bf0a9641654b54beed8162de3f3eea7",
+        "notebook_sha256": "da88a27c47fb47ce5f5421ea90e7d2301de0685bc1641a15f2c77102d5d4ec07",
         "catalog_sha256": [
           "92bffbfea7a0a23cd508c8fc5e916b7f1300c46d3ed6f14e2c93540ab489abfd",
           "04b00ab73a5997044da5d7df32d3bc0289573db158c8ea05f5ce23e48166b42d"

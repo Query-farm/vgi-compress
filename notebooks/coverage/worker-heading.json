@@ -1,0 +1,26 @@
+{
+  "repository": "Query-farm/vgi-compress",
+  "title": "Multi-Codec Compression",
+  "subtitle": "Compress, decompress, and identify zstd, gzip, brotli, lz4, snappy, xz, and bzip2 payloads stored in BLOB columns.",
+  "evidence_sha256": "aec311ac7b4e6723e23af47e28d1d03dbdcb5b69c5c4028131ec436955234f50",
+  "provenance": "Actual catalog tags from the released runtime used by the notebook",
+  "worker_release": "v0.4.0",
+  "runtime_export": {
+    "attach": "ATTACH 'compress' (TYPE vgi, LOCATION 'github-auto://Query-farm/vgi-compress@v0.4.0');",
+    "query": "SELECT database_name, comment, map_extract_value(tags,'vgi.title') AS title, map_extract_value(tags,'vgi.subtitle') AS subtitle FROM duckdb_databases() WHERE map_extract_value(tags,'vgi.title') IS NOT NULL",
+    "columns": [
+      "database_name",
+      "comment",
+      "title",
+      "subtitle"
+    ],
+    "rows": [
+      [
+        "compress",
+        "Multi-codec (de)compression over a DuckDB `BLOB` column \u2014 zstd, gzip, zlib, deflate, brotli, lz4, snappy, xz, lzma, bzip2 \u2014 with codec auto-detection and a decompression-bomb guard.",
+        "Multi-Codec Compression",
+        "Compress, decompress, and identify zstd, gzip, brotli, lz4, snappy, xz, and bzip2 payloads stored in BLOB columns."
+      ]
+    ]
+  }
+}

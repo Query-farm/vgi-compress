@@ -1,0 +1,5 @@
+Shared notebook tools v0.3.8; complete default runs in fresh kernels.
+Updated vgi-example-notebooks v0.3.6 (31eb1be7) -> v0.3.8 (025173bd)
+Running 01_where_to_put_the_batch_boundary.ipynb ...
+OK: 26 code cells, 2 charts, 3.5s
+All saved output cells are byte-identical to the previous publication. Analytical code is unchanged.
