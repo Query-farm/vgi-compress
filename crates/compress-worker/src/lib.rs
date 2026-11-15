@@ -42,7 +42,7 @@ fn catalog_metadata(name: &str) -> CatalogModel {
     CatalogModel {
         name: name.to_string(),
         comment: Some(
-            "Multi-codec (de)compression over a DuckDB `BLOB` column — zstd, gzip, zlib, deflate, \
+            "Multi-codec (de)compression over a DuckDB BLOB column — zstd, gzip, zlib, deflate, \
              brotli, lz4, snappy, xz, lzma, bzip2 — with codec auto-detection and a \
              decompression-bomb guard."
                 .to_string(),
