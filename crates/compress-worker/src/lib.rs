@@ -100,7 +100,13 @@ fn catalog_metadata(name: &str) -> CatalogModel {
                  decompression bombs.** Every decode path enforces a bounded `max_output_bytes` \
                  cap (default 256 MiB): a hostile high-ratio blob aborts that one row with a \
                  per-row error instead of OOMing the worker. Pure in-engine local CPU — no \
-                 network, no state, zero egress."
+                 network, no state, zero egress.\n\n\
+                 ## Sources and references\n\n\
+                 - [RFC 8878](https://www.rfc-editor.org/rfc/rfc8878) — Zstandard\n\
+                 - [RFC 1952](https://www.rfc-editor.org/rfc/rfc1952) — gzip; [RFC 1950](https://www.rfc-editor.org/rfc/rfc1950) — zlib; [RFC 1951](https://www.rfc-editor.org/rfc/rfc1951) — DEFLATE\n\
+                 - [RFC 7932](https://www.rfc-editor.org/rfc/rfc7932) — Brotli\n\
+                 - [LZ4 frame format](https://github.com/lz4/lz4/blob/dev/doc/lz4_Frame_format.md) — and the [Snappy framing format](https://github.com/google/snappy/blob/main/framing_format.txt)\n\
+                 - [The .xz file format](https://tukaani.org/xz/format.html) — and [bzip2](https://sourceware.org/bzip2/)"
                     .to_string(),
             ),
             ("vgi.author".to_string(), "Query.Farm".to_string()),
