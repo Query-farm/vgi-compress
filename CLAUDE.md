@@ -49,7 +49,7 @@ crates/compress-worker/    # arrow + vgi: maps core results onto DuckDB types, s
   src/scalar/codecs.rs     #   codecs() -> LIST<VARCHAR>
                            #   (build version is the catalog implementation_version)
 test/sql/compress.test     # haybarn SQLLogic E2E over in-engine fixtures (no external files)
-ci/                        # check-version.sh, run-integration.sh, preprocess-require.awk
+ci/                        # check-version.sh, run-integration.sh
 ```
 
 ## Design discipline (untrusted input — the load-bearing part)
@@ -87,7 +87,7 @@ cargo clippy --all-targets --all-features -- -D warnings
 cargo test --workspace --all-features
 RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --workspace
 cargo build --release --bin compress-worker
-./run_tests.sh                                          # haybarn SQLLogic E2E
+make test-sql                                           # haybarn SQLLogic E2E
 uvx --from vgi-lint-check vgi-lint lint \
     target/release/compress-worker --fail-on info   # score 100, no findings
 ```

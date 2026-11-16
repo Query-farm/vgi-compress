@@ -14,3 +14,4 @@
 
 # Browser build output (wasm/build.sh)
 /wasm/dist
+/.tools/

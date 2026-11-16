@@ -96,7 +96,7 @@ jobs:
         echo "::endgroup::"
 
         echo "::group::stdio entrypoint smoke (one file, cold container per ATTACH)"
-        TRANSPORT=subprocess \
+        TRANSPORT=stdio \
           TEST_PATTERN="test/sql/compress.test" \
           VGI_COMPRESS_WORKER="docker run -i --rm $CITEST_IMAGE stdio" \
           ci/run-integration.sh

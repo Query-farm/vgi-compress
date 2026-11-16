@@ -28,6 +28,8 @@ permissions:
   contents: read
 
 env:
+  # The SQL test runner (haybarn-unittest) every SQL job installs.
+  HAYBARN_VERSION: "2.0.0rc11"
   CARGO_TERM_COLOR: always
   RUST_BACKTRACE: 1
 
@@ -62,38 +64,19 @@ jobs:
       - name: Build worker (release)
         run: cargo build --release --bin compress-worker
 
-  # Resolve the latest published haybarn release once, so the whole matrix tests
-  # the same version (and we never hardcode/pin it).
-  resolve-haybarn:
-    runs-on: ubuntu-latest
-    outputs:
-      release: ${{ steps.r.outputs.release }}
-    steps:
-      - id: r
-        run: |
-          REL=$(gh release list --repo Query-farm-haybarn/haybarn --limit 30 --json tagName \
-            --jq '[.[].tagName | select(startswith("haybarn-v2.0"))][0]')
-          [ -n "$REL" ] && [ "$REL" != null ] || { echo "::error::no haybarn-v2.0 release found"; exit 1; }
-          echo "release=$REL" >> "$GITHUB_OUTPUT"
-          echo "Latest haybarn release: $REL"
-        env:
-          GH_TOKEN: ${{ github.token }}
-
   integration:
-    # SQL end-to-end across every transport the vgi extension supports. The SAME
-    # test/sql/*.test suite runs three ways — the only difference is the LOCATION
-    # the .test files ATTACH (ci/run-integration.sh sets VGI_COMPRESS_WORKER per
-    # transport): subprocess = the stdio worker binary DuckDB spawns; http =
-    # `compress-worker --http` (auto port, advertises PORT:<n>); unix =
-    # `compress-worker --unix <sock>` (advertises UNIX:<sock>).
+    # SQL end-to-end: the SAME test/sql/*.test suite over each transport the vgi
+    # extension supports; ci/run-integration.sh sets VGI_COMPRESS_WORKER per transport:
+    # stdio = DuckDB spawns the worker; launch = DuckDB starts it once on a unix
+    # socket and pools connections; http = `compress-worker --http`.
     name: SQL E2E (${{ matrix.transport }}) · ${{ matrix.os }}
-    needs: resolve-haybarn
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
     strategy:
       fail-fast: false
       matrix:
         os: ${{ inputs.linux_only && fromJSON('["ubuntu-latest"]') || fromJSON('["ubuntu-latest", "macos-latest"]') }}
-        transport: [subprocess, http, unix]
-    runs-on: ${{ matrix.os }}
+        transport: [stdio, launch, http]
     steps:
       - uses: actions/checkout@v7
 
@@ -101,35 +84,25 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: release
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - uses: astral-sh/setup-uv@v7
 
       - name: Build worker (release)
-        # The `http` transport needs the `vgi-rpc` `http` feature; the workspace
-        # already pins `vgi-rpc = { features = ["macros", "http"] }`, so a plain
-        # release build serves all three transports — no extra cargo features.
-        run: cargo build --release --bin compress-worker
+        run: cargo build --locked --release --bin compress-worker
 
-      - name: Download haybarn-unittest
+      - name: Install the SQL test runner
         run: |
-          gh release download "$HAYBARN_RELEASE" \
-            --repo Query-farm-haybarn/haybarn \
-            --pattern '${{ matrix.os == 'macos-latest' && 'haybarn_unittest-osx-arm64.zip' || 'haybarn_unittest-linux-amd64.zip' }}' \
-            --output haybarn-unittest.zip --clobber
-          mkdir -p hb && unzip -o -q haybarn-unittest.zip -d hb
-        env:
-          GH_TOKEN: ${{ github.token }}
-          HAYBARN_RELEASE: ${{ needs.resolve-haybarn.outputs.release }}
+          uv venv .tools
+          uv pip install -p .tools "haybarn-unittest==${HAYBARN_VERSION}"
 
-      - name: Resolve runner + worker paths
+      - name: Run test/sql over ${{ matrix.transport }}
         run: |
-          UNITTEST="$PWD/$(find hb -name 'haybarn-unittest' -type f | head -1)"
-          chmod +x "$UNITTEST"
-          echo "HAYBARN_UNITTEST=$UNITTEST" >> "$GITHUB_ENV"
-          echo "WORKER_BIN=$PWD/target/release/compress-worker" >> "$GITHUB_ENV"
-
-      - name: Run extension integration suite (${{ matrix.transport }})
-        run: ci/run-integration.sh
-        env:
-          TRANSPORT: ${{ matrix.transport }}
+          export WORKER="$PWD/target/release/compress-worker"
+          export HAYBARN_UNITTEST="$PWD/.tools/bin/haybarn-unittest"
+          TRANSPORT=${{ matrix.transport }} ci/run-integration.sh
 
   metadata-quality:
     name: metadata quality (vgi-lint)

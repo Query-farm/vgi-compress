@@ -193,7 +193,7 @@ covering all nine SQL functions with charts and a published-release parameter ex
 ```bash
 cargo build --release --bin compress-worker     # the worker binary
 cargo test --workspace --all-features           # unit + golden vectors + proptest zero-panic gate
-./run_tests.sh                                  # haybarn SQLLogic E2E (needs haybarn-unittest on PATH)
+make test-sql                                   # haybarn SQLLogic E2E (needs haybarn-unittest on PATH)
 ```
 
 The repository builds standalone against the published VGI Rust SDK
